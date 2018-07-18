@@ -1,0 +1,9 @@
+name: LmaoBedWars
+author: DelfikPro
+softdepend: [ImplarioLib, YogurtCore, LmaoNetwork]
+version: 3.0.0
+main: pro.delfik.bedwars.BWPlugin
+commands:
+  bedwars:
+  kill:
+  map:
