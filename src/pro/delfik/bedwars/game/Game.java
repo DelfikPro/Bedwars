@@ -27,7 +27,7 @@ public class Game {
 	public static final HashMap<String, Game> byWorld = new HashMap<>();
 	
 	private final String mapname;
-	private State state = State.INITIALIZATION;
+	private State state = State.WAITING;
 	private final BWTeam[] teams;
 	private final World w;
 	public final GUI inv = new GUI(Bukkit.createInventory(null, 27, "Выбор команды"));
@@ -54,9 +54,7 @@ public class Game {
 		byWorld.remove(w.getName());
 		state = State.ENDING;
 		WinDistributor.announce(this, WinDistributor.getWinner(this));
-		Bukkit.getScheduler().runTaskLater(BWPlugin.plugin, () -> {
-			w.getPlayers().forEach(p -> U.send(p.getName(), "LOBBY_1"));
-		}, 200L);
+		Bukkit.getScheduler().runTaskLater(BWPlugin.plugin, () -> w.getPlayers().forEach(p -> U.send(p.getName(), "LOBBY_1")), 200L);
 		
 		WorldManager.reset(w);
 	}
@@ -98,9 +96,8 @@ public class Game {
 	public enum State {
 		WAITING(),
 		STARTING(),
+		GENERATION(),
 		GAME(),
-		ENDING(),
-		RESETTING(),
-		INITIALIZATION()
+		ENDING()
 	}
 }

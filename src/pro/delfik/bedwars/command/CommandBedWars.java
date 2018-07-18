@@ -12,16 +12,15 @@ import org.bukkit.entity.Player;
 import pro.delfik.bedwars.game.Game;
 import pro.delfik.bedwars.handle.GameLoader;
 import pro.delfik.bedwars.service.SettingGUI;
-import pro.delfik.lmao.command.handle.Command;
-import pro.delfik.lmao.command.handle.ImplarioCommand;
+import pro.delfik.lmao.command.handle.LmaoCommand;
 import pro.delfik.lmao.command.handle.NotEnoughArgumentsException;
-import pro.delfik.lmao.permissions.Rank;
+import pro.delfik.util.Rank;
 import pro.delfik.world.SchematicManager;
 
 import java.io.IOException;
 import java.util.HashMap;
 
-public class CommandBedWars extends ImplarioCommand {
+public class CommandBedWars extends LmaoCommand {
 	
 	private static final HashMap<String, CommandProcessor> functions = new HashMap<>();
 	
@@ -67,8 +66,11 @@ public class CommandBedWars extends ImplarioCommand {
 	}
 	
 	
-	@Command(name = "bedwars", rankRequired = Rank.ADMIN, description = "Управление играми BedWars", usage = "bedwars [...]")
-	public void onCommand(CommandSender sender, String arg2, String[] args) throws NotEnoughArgumentsException {
+	public CommandBedWars() {
+		super("bedwars", Rank.IMPLARIO, "Управление BedWars");
+	}
+	
+	public void run(CommandSender sender, String arg2, String[] args) throws NotEnoughArgumentsException {
 		if (args.length == 0) sender.sendMessage("§c/bedwars [§f" + Converter.merge(functions.keySet(), s -> s, "§c, §f") + "§c]");
 		else {
 			String[] a = new String[args.length - 1];

@@ -7,12 +7,12 @@ import pro.delfik.bedwars.game.trading.TradeHandler;
 import pro.delfik.bedwars.game.usables.GPSTracker;
 import pro.delfik.bedwars.game.usables.SavingPlatform;
 import pro.delfik.bedwars.game.usables.ThorBone;
-import pro.delfik.lmao.command.handle.ImplarioCommand;
+import pro.delfik.lmao.command.handle.LmaoCommand;
 
 public class Init {
 	
 	public static void commands() {
-		for (ImplarioCommand cmd : new ImplarioCommand[] {
+		for (LmaoCommand cmd : new LmaoCommand[] {
 				new CommandBedWars()
 		}) BWPlugin.r.regCommand(cmd);
 	}
