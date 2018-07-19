@@ -1,6 +1,6 @@
 name: LmaoBedWars
 author: DelfikPro
-softdepend: [ImplarioLib, YogurtCore, LmaoNetwork]
+softdepend: [ImplarioLib, LmaoNetwork]
 version: 3.0.0
 main: pro.delfik.bedwars.BWPlugin
 commands:
