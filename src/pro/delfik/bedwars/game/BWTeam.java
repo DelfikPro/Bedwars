@@ -10,16 +10,13 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
 import pro.delfik.bedwars.Defaults;
 import pro.delfik.bedwars.game.environment.Bed;
 import pro.delfik.bedwars.game.environment.ResourceSpawner;
-import pro.delfik.bedwars.game.trading.Resource;
 import pro.delfik.bedwars.handle.TeamInfo;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
