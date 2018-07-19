@@ -26,7 +26,7 @@ public class SettingGUI {
 		gui.put(0, Generate.itemstack(Material.CLAY_BRICK, 1, 0, "§a§lГенераторы ресурсов"), p -> p.openInventory(resources.getInventory()));
 		gui.put(1, Generate.itemstack(Material.WOOL, 1, 14, "§a§lНастройка команд"), p -> p.openInventory(teams.getInventory()));
 		
-		teams.put(4, Generate.charge(Color.LIME, "§f[§a+§f] §aДобавить команду"), p -> addingTeam(p));
+		teams.put(4, Generate.charge(Color.LIME, "§f[§a+§f] §aДобавить команду"), SettingGUI::addingTeam);
 		
 	}
 	
