@@ -16,6 +16,7 @@ import pro.delfik.bedwars.service.WorldManager;
 import pro.delfik.lmao.core.Person;
 import pro.delfik.lmao.util.U;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -85,7 +86,7 @@ public class Game {
 	}
 	
 	public void updateInv(BWTeam t) {
-		List<String> lore = new LinkedList<>();
+		List<String> lore = new ArrayList<>(t.getPlayers().size());
 		t.getPlayers().forEach(p -> lore.add(p.getDisplayName()));
 		if (lore.size() < maxInTeam) lore.add("§e>> Нажмите, чтобы присоединиться <<");
 		Defaults.Teams o = t.getTemplate();

@@ -1,6 +1,5 @@
 package pro.delfik.bedwars.game.environment;
 
-import lib.Converter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import pro.delfik.bedwars.BWPlugin;
@@ -9,12 +8,13 @@ import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Game;
 import pro.delfik.bedwars.game.trading.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResourceSpawner {
 	private final Location location;
 	private final Resource resource;
-	public static final List<ResourceSpawner> list = Converter.toList();
+	public static final List<ResourceSpawner> list = new ArrayList<>();
 	
 	public ResourceSpawner(Location loc, Resource res) {
 		location = loc;

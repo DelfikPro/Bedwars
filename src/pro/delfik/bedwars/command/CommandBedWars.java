@@ -14,6 +14,7 @@ import pro.delfik.bedwars.handle.GameLoader;
 import pro.delfik.bedwars.service.SettingGUI;
 import pro.delfik.lmao.command.handle.LmaoCommand;
 import pro.delfik.lmao.command.handle.NotEnoughArgumentsException;
+import pro.delfik.util.Converter;
 import pro.delfik.util.Rank;
 import pro.delfik.world.SchematicManager;
 
