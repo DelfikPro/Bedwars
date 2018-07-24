@@ -1,6 +1,7 @@
 package pro.delfik.bedwars.game;
 
 import lib.Generate;
+import lib.ItemBuilder;
 import lib.gui.GUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -91,7 +92,7 @@ public class Game {
 		if (lore.size() < maxInTeam) lore.add("§e>> Нажмите, чтобы присоединиться <<");
 		Defaults.Teams o = t.getTemplate();
 		ItemStack i = Generate.itemstack(Material.WOOL, 1, o.getWool(),
-				o.getColor() + o.getName() + " команда §f[" + t.getPlayers().size() + "/" + maxInTeam + "]", lore.toArray(new String[] {}));
+				o.getColor() + o.getName() + " команда §f[" + t.getPlayers().size() + "/" + maxInTeam + "]", lore.toArray(new String[]{}));
 	}
 	
 	public enum State {
