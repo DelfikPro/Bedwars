@@ -1,8 +1,8 @@
-name: LmaoBedWars
+name: Bedwars
 author: DelfikPro
 softdepend: [ImplarioLib, LmaoNetwork]
 version: 3.0.0
-main: pro.delfik.bedwars.BWPlugin
+main: pro.delfik.bedwars.Bedwars
 commands:
   bedwars:
   kill:
