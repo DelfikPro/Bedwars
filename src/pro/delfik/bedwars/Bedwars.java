@@ -1,11 +1,9 @@
 package pro.delfik.bedwars;
 
-import org.bukkit.plugin.java.JavaPlugin;
-import pro.delfik.lmao.core.Registrar;
+import org.bukkit.entity.Player;
 
-public class Bedwars extends JavaPlugin{
-	@Override
-	public void onEnable() {
-		Registrar registrar = new Registrar(this);
+public class BedWars {
+	public static void toLobby(Player p) {
+		// ToDo: Тело метода BedWars.toLobby();
 	}
 }

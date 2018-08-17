@@ -2,8 +2,9 @@ name: Bedwars
 author: DelfikPro
 softdepend: [ImplarioLib, LmaoNetwork]
 version: 3.0.0
-main: pro.delfik.bedwars.Bedwars
+main: pro.delfik.bedwars.BWPlugin
 commands:
   bedwars:
+    aliases: [bw]
   kill:
-  map:
+    aliases: [dupe, hack, fly]
