@@ -12,7 +12,6 @@ import static java.lang.Double.valueOf;
  * @see Location
  * @see Vec3i
  */
-// ToDo: Перенести в LmaoNetwork/Utils.
 public interface Vec {
 	
 	/**
