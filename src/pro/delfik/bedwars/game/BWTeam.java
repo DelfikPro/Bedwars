@@ -7,8 +7,8 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
 import pro.delfik.bedwars.util.FixedArrayList;
 import pro.delfik.bedwars.util.Resources;
-import pro.delfik.bedwars.world.Vec;
-import pro.delfik.bedwars.world.Vec3i;
+import pro.delfik.lmao.util.Vec;
+import pro.delfik.lmao.util.Vec3i;
 import pro.delfik.lmao.core.Person;
 
 import java.util.ArrayList;

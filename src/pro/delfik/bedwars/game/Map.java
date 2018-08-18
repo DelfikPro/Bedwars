@@ -5,7 +5,7 @@ import org.bukkit.World;
 import pro.delfik.bedwars.util.Colors;
 import pro.delfik.bedwars.util.CyclicIterator;
 import pro.delfik.bedwars.util.Resources;
-import pro.delfik.bedwars.world.Vec;
+import pro.delfik.lmao.util.Vec;
 
 import java.util.List;
 

@@ -12,6 +12,7 @@ import com.sk89q.worldedit.util.io.file.FilenameException;
 import com.sk89q.worldedit.world.DataException;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import pro.delfik.lmao.util.Vec3i;
 
 import java.io.File;
 import java.io.IOException;

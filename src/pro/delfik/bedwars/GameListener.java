@@ -11,7 +11,7 @@ import pro.delfik.bedwars.game.Game;
 import pro.delfik.bedwars.game.stuff.GPSTracker;
 import pro.delfik.bedwars.game.stuff.HomeTeleportation;
 import pro.delfik.bedwars.game.stuff.RescuePlatform;
-import pro.delfik.bedwars.world.Vec3i;
+import pro.delfik.lmao.util.Vec3i;
 import pro.delfik.lmao.core.Person;
 
 public class GameListener implements Listener {

@@ -8,13 +8,14 @@ import pro.delfik.bedwars.game.Map;
 import pro.delfik.bedwars.game.Resource;
 import pro.delfik.bedwars.util.Colors;
 import pro.delfik.bedwars.util.Resources;
-import pro.delfik.bedwars.world.Vec;
+import pro.delfik.lmao.util.Vec;
 import pro.delfik.util.Converter;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+
+import static pro.delfik.lmao.util.Vec.toVecList;
 
 /**
  * Класс, читающий конфигурацию карт, и не только.
@@ -84,9 +85,5 @@ public class ConfigReader {
 			resources.put(color, res);
 		}
 		return new Map(name, schematic, playersInTeam, teamsAmount, center, respawns, resources);
-	}
-
-	public static List<Vec> toVecList(List<String> list) {
-		return Converter.transform(list, Vec::toVec);
 	}
 }
