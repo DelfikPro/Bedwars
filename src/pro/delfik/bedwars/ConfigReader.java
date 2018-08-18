@@ -9,6 +9,7 @@ import pro.delfik.bedwars.game.Resource;
 import pro.delfik.bedwars.util.Colors;
 import pro.delfik.bedwars.util.Resources;
 import pro.delfik.bedwars.world.Vec;
+import pro.delfik.util.Converter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,16 +85,8 @@ public class ConfigReader {
 		}
 		return new Map(name, schematic, playersInTeam, teamsAmount, center, respawns, resources);
 	}
-	
-	// ToDo: Перенести в Utils/Converter.
+
 	public static List<Vec> toVecList(List<String> list) {
-		return transform(list, Vec::toVec);
-	}
-	
-	// ToDo: Перенести в Utils/Converter.
-	public static <From, To> List<To> transform(List<From> from, Function<From, To> converter) {
-		List<To> result = new ArrayList<>();
-		for (From f : from) result.add(converter.apply(f));
-		return result;
+		return Converter.transform(list, Vec::toVec);
 	}
 }
