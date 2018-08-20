@@ -2,7 +2,7 @@ package pro.delfik.bedwars.world;
 
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import pro.delfik.bedwars.Bedwars;
+import pro.delfik.bedwars.BedWars;
 
 import java.io.File;
 
@@ -19,7 +19,7 @@ public class WorldUtils {
 	public static void clear(World w) {
 		
 		// Если в мире ещё остались какие-то игроки, департировать их в лобби.
-		for (Player p : w.getPlayers()) Bedwars.toLobby(p);
+		for (Player p : w.getPlayers()) BedWars.toLobby(p);
 		
 		// Выгрузить все чанки
 		Chunk[] loadedChunks = w.getLoadedChunks();
