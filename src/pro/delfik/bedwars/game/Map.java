@@ -8,6 +8,7 @@ import pro.delfik.bedwars.util.Resources;
 import pro.delfik.lmao.util.Vec;
 
 import java.util.List;
+import java.util.Set;
 
 public class Map {
 	
@@ -69,5 +70,9 @@ public class Map {
 	 */
 	public Location getSpawnLocation(Color color, World w) {
 		return spawns.get(color).next().toLocation(w);
+	}
+
+	public Set<Color> getRegisteredColors() {
+		return spawns.keySet();
 	}
 }
