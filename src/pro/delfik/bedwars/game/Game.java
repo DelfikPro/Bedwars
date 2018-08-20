@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 public class Game {
 	
 	// Ограничение на максимальное количество одновременных игр
-	private static final int MAX_RUNNING_GAMES = 5;
+	public static final int MAX_RUNNING_GAMES = 5;
 	
 	// Текущие игры
 	private static final FixedArrayList<Game> RUNNING = new FixedArrayList<>(MAX_RUNNING_GAMES);
@@ -205,7 +205,12 @@ public class Game {
 	public Location getSpawnLocation(Color color) {
 		return map.getSpawnLocation(color, world);
 	}
-	
+
+	public static Game get(Integer slot) {
+		if (slot < 0 || slot > MAX_RUNNING_GAMES) throw new IllegalArgumentException();
+		else return RUNNING.get(slot);
+	}
+
 	/**
 	 * Состояние игры.
 	 * NOTHING: Сектор свободен, здесь можно начать игру.
@@ -216,16 +221,16 @@ public class Game {
 	 * RESETTING: Очищение мира после игры.
 	 */
 	public enum State {
-		NOTHING("Сектор пуст", Material.QUARTZ_BLOCK),
-		GENERATING("Генерация карты", Material.DIAMOND_BLOCK),
-		COOLDOWN("Начало игры", Material.DIAMOND_BLOCK),
-		GAME("Идёт игра", Material.GOLD_BLOCK),
-		ENDING("Конец игры", Material.REDSTONE_BLOCK),
-		RESETTING("Сброс карты", Material.COMMAND);
+		NOTHING("§aОжидание игроков", Material.EMERALD_BLOCK),
+		GENERATING("§bГенерация карты", Material.DIAMOND_BLOCK),
+		COOLDOWN("§bНачало игры", Material.DIAMOND_BLOCK),
+		GAME("§6Идёт игра", Material.GOLD_BLOCK),
+		ENDING("§cКонец игры", Material.REDSTONE_BLOCK),
+		RESETTING("§6Сброс карты", Material.COMMAND);
 		
 		private final String title;
 		private final Material material;
-		
+
 		State(String title, Material material) {
 			this.title = title;
 			this.material = material;

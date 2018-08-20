@@ -1,10 +1,12 @@
 package pro.delfik.bedwars;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Game;
@@ -72,11 +74,23 @@ public class GameListener implements Listener {
 		
 		
 	}
-	
+
+	public void onMove(PlayerMoveEvent e) {
+		if (isSameBlock(e.getFrom(), e.getTo())) return;
+		HomeTeleportation.cancelIfTeleporting(e.getPlayer());
+	}
+
+	private boolean isSameBlock(Location from, Location to) {
+		return
+				from.getBlockX() == to.getBlockX() &&
+				from.getBlockY() == to.getBlockY() &&
+				from.getBlockZ() == to.getBlockZ();
+	}
+
 	private static void decrementHandItem(Player p) {
 		ItemStack hand = p.getInventory().getItemInHand();
 		hand.setAmount(hand.getAmount() - 1);
 		p.getInventory().setItemInHand(hand);
 	}
-	
+
 }
