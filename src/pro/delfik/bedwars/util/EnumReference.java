@@ -37,12 +37,12 @@ public abstract class EnumReference<Key extends Enum<Key>, Value> extends EnumMa
 	 * @param key Ключ, по которому нужно найти значение.
 	 * @return Значение, если ключ найден, стандартное значение, если не найден, null, если стандартное неопределено.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Value get(Object key) {
 		// Возвращение стандартным путём, если объект есть или нет стандартного значения.
 		Value value = super.get(key);
 		if (value != null || defaultValueSupplier == null) return value;
-		
 		// Добавление в мап стандартного значения (Для последующих обращений) и его возвращение.
 		return computeIfAbsent((Key) key, k -> defaultValueSupplier.get());
 	}

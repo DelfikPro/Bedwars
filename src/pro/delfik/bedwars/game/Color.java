@@ -56,7 +56,7 @@ public enum Color {
 	
 	public static Color get(String colorName) {
 		try {
-			return valueOf(colorName);
+			return valueOf(colorName.toUpperCase());
 		} catch (IllegalArgumentException | NullPointerException ex) {
 			return null;
 		}

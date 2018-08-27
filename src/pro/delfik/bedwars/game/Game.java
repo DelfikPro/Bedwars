@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -209,6 +210,10 @@ public class Game {
 	public static Game get(Integer slot) {
 		if (slot < 0 || slot > MAX_RUNNING_GAMES) throw new IllegalArgumentException();
 		else return RUNNING.get(slot);
+	}
+
+	public static Game get(Player player) {
+		return get(player.getWorld());
 	}
 
 	/**

@@ -22,10 +22,10 @@ public class GameListener implements Listener {
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
-		Game g = Game.get(p.getWorld());
-		if (g == null) return;
-		BWTeam t = g.getTeam(p.getName());
-		if (t == null) return;
+		Game game = Game.get(p.getWorld());
+		if (game == null) return;
+		BWTeam team = game.getTeam(p.getName());
+		if (team == null) return;
 		
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			
@@ -37,18 +37,18 @@ public class GameListener implements Listener {
 					e.setCancelled(true);
 					return;
 				case CHEST:
-					if (!t.getChests().contains(vec)) {
+					if (!team.getChests().contains(vec)) {
 						p.sendMessage("§cЭтот сундук не принадлежит вашей команде.");
 						e.setCancelled(true);
 					}
 					break;
 				case ENDER_CHEST:
-					p.openInventory(t.getEnderChest());
+					p.openInventory(team.getEnderChest());
 					break;
 				case BED_BLOCK:
 					if (!e.isBlockInHand() && !p.isSneaking()) {
 						e.setCancelled(true);
-						p.sendMessage("§7(Всем) §6Кровать§7: §fЯ знаю, тебе хочется спать...");
+						p.sendMessage("§7(Всем) §dКровать§7: §fЯ знаю, тебе хочется спать...");
 					}
 					break;
 			}
@@ -65,10 +65,11 @@ public class GameListener implements Listener {
 					}
 					break;
 				case COMPASS:
-					GPSTracker.updateFor(g, t, Person.get(p));
+					GPSTracker.updateFor(game, team, Person.get(p));
 					break;
 				case SULPHUR:
-					HomeTeleportation tp = new HomeTeleportation();
+					HomeTeleportation tp = new HomeTeleportation(Person.get(p), team, game);
+					break;
 			}
 		}
 		

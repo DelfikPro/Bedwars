@@ -13,7 +13,7 @@ import java.util.function.Supplier;
  * @version 2.0
  */
 public enum Resource {
-	BRONZE(Material.CLAY_BRICK, "§6Бронза", 15),
+	BRONZE(Material.CLAY_BRICK, "§6Бронза", 20),
 	GOLD(Material.GOLD_INGOT, "§eЗолото", 300),
 	IRON(Material.IRON_INGOT, "§fЖелезо", 100);
 	

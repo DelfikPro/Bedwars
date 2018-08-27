@@ -1,23 +1,36 @@
 package pro.delfik.bedwars.game;
 
+import lib.gui.VotingGUI;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import pro.delfik.bedwars.preparation.GameSize;
 import pro.delfik.bedwars.util.Colors;
 import pro.delfik.bedwars.util.CyclicIterator;
 import pro.delfik.bedwars.util.Resources;
 import pro.delfik.lmao.util.Vec;
+import pro.delfik.util.Converter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class Map {
-	
+
+	private static final HashMap<GameSize, List<Map>> FORMAT = new HashMap<>();
+	private static final HashMap<String, Map> LIST = new HashMap<>();
+
 	private final String name, schematic;
 	private final int teams, teamPlayers;
 	private final Vec center;
 	private final Colors<CyclicIterator<Vec>> spawns;
 	private final Colors<Resources<List<Vec>>> resourceSpawners;
-	
+	private final Material material;
+
 	/**
 	 * Создаёт инстанцию карты, которая потом используется всё время.
 	 * @param name Человекочитаемойе название карты.
@@ -37,6 +50,11 @@ public class Map {
 		this.center = center;
 		this.spawns = spawns.convert(CyclicIterator::new);
 		this.resourceSpawners = resources;
+		this.material = Converter.randomEnum(Material.class);
+		GameSize format = new GameSize(teams, teamPlayers);
+		if (!FORMAT.containsKey(format)) FORMAT.put(format, new ArrayList<>());
+		FORMAT.get(format).add(this);
+		LIST.put(schematic, this);
 	}
 	
 	public Colors<Resources<List<Vec>>> getResourceSpawners() {
@@ -74,5 +92,23 @@ public class Map {
 
 	public Set<Color> getRegisteredColors() {
 		return spawns.keySet();
+	}
+
+	/**
+	 * Ищет карты по формату игры.
+	 * @param format Формат карты, например 4х2.
+	 * @return Список карт с подходящим форматом.
+	 */
+	public static List<Map> getMaps(GameSize format) {
+		List<Map> list = FORMAT.get(format);
+		return list != null ? list : new ArrayList<>();
+	}
+
+	public Material getMaterial() {
+		return material;
+	}
+
+	public static Map get(String schematicName) {
+		return LIST.get(schematicName);
 	}
 }

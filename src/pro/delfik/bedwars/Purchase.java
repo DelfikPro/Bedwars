@@ -14,9 +14,4 @@ public class Purchase implements Listener {
 	public static Inventory getInventory() {
 		return gui.getInventory();
 	}
-	
-	@EventHandler
-	public void event() {
-	
-	}
 }

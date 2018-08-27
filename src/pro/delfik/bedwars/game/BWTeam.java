@@ -97,5 +97,6 @@ public class BWTeam {
 	}
 	
 	public Inventory getEnderChest() {
+		return enderChest;
 	}
 }
