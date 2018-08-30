@@ -2,7 +2,7 @@ package pro.delfik.bedwars.preparation;
 
 import lib.gui.VotingGUI;
 import pro.delfik.bedwars.game.Map;
-import pro.delfik.util.Converter;
+import implario.util.Converter;
 
 import java.util.List;
 

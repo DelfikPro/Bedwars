@@ -10,7 +10,7 @@ import pro.delfik.bedwars.util.Colors;
 import pro.delfik.bedwars.util.CyclicIterator;
 import pro.delfik.bedwars.util.Resources;
 import pro.delfik.lmao.util.Vec;
-import pro.delfik.util.Converter;
+import implario.util.Converter;
 
 import java.util.ArrayList;
 import java.util.Collection;

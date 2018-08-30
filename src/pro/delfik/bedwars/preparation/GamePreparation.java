@@ -9,7 +9,7 @@ import pro.delfik.bedwars.util.FixedArrayList;
 import pro.delfik.lmao.core.Person;
 import pro.delfik.lmao.util.Cooldown;
 import pro.delfik.lmao.util.U;
-import pro.delfik.util.Converter;
+import implario.util.Converter;
 
 import java.util.Collections;
 import java.util.HashMap;

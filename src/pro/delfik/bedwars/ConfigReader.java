@@ -9,7 +9,7 @@ import pro.delfik.bedwars.game.Resource;
 import pro.delfik.bedwars.util.Colors;
 import pro.delfik.bedwars.util.Resources;
 import pro.delfik.lmao.util.Vec;
-import pro.delfik.util.Converter;
+import implario.util.Converter;
 
 import java.io.File;
 import java.util.ArrayList;

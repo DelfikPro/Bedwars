@@ -17,7 +17,7 @@ import pro.delfik.bedwars.world.Schematics;
 import pro.delfik.bedwars.world.WorldUtils;
 import pro.delfik.lmao.core.Person;
 import pro.delfik.lmao.util.Cooldown;
-import pro.delfik.util.Converter;
+import implario.util.Converter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

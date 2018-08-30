@@ -1,6 +1,6 @@
 package pro.delfik.bedwars.preparation;
 
-import pro.delfik.util.Converter;
+import implario.util.Converter;
 
 import static pro.delfik.util.Converter.toInt;
 

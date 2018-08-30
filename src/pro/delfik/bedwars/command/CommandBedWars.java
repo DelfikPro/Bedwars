@@ -16,8 +16,8 @@ import pro.delfik.lmao.command.handle.LmaoCommand;
 import pro.delfik.lmao.command.handle.NotEnoughArgumentsException;
 import pro.delfik.lmao.core.Person;
 import pro.delfik.lmao.util.U;
-import pro.delfik.util.Converter;
-import pro.delfik.util.Rank;
+import implario.util.Converter;
+import implario.util.Rank;
 
 import java.util.HashMap;
 import java.util.List;
