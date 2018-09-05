@@ -1,23 +1,21 @@
 package pro.delfik.bedwars.command;
 
+import implario.util.Converter;
+import implario.util.Rank;
 import net.minecraft.server.v1_8_R1.ChunkCoordIntPair;
 import net.minecraft.server.v1_8_R1.EntityPlayer;
 import net.minecraft.server.v1_8_R1.World;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
 import org.bukkit.entity.Player;
 import pro.delfik.bedwars.preparation.GamePreparation;
-import pro.delfik.bedwars.preparation.GameSize;
 import pro.delfik.lmao.command.handle.CustomException;
 import pro.delfik.lmao.command.handle.LmaoCommand;
 import pro.delfik.lmao.command.handle.NotEnoughArgumentsException;
 import pro.delfik.lmao.core.Person;
 import pro.delfik.lmao.util.U;
-import pro.delfik.util.Converter;
-import pro.delfik.util.Rank;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +48,7 @@ public class CommandBedWars extends LmaoCommand {
 
 	private static String create(CommandSender sender, String[] args) {
 		requireArgs(args, 1, "[Формат]");
-		GamePreparation preparation = new GamePreparation(GameSize.get(args[0]), 0);
+		GamePreparation preparation = new GamePreparation(requireInt(args[0]), 0);
 		preparation.add(Person.get(sender));
 		preparation.start();
 		return "§aВсё супер. Странно.";

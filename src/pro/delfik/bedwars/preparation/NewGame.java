@@ -1,8 +1,8 @@
 package pro.delfik.bedwars.preparation;
 
-import lib.ItemBuilder;
-import lib.gui.GUI;
-import lib.gui.GeneralizedGUI;
+import pro.delfik.lmao.outward.item.ItemBuilder;
+import pro.delfik.lmao.outward.gui.GUI;
+import pro.delfik.lmao.outward.gui.GeneralizedGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -20,7 +20,8 @@ public class CyclicIterator<T> implements Iterator<T> {
 	public boolean hasNext() {
 		return true;
 	}
-	
+
+	@SuppressWarnings("uncheked")
 	@Override
 	public T next() {
 		if (array.length >= ++pos) pos = 0;

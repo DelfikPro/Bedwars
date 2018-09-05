@@ -1,6 +1,6 @@
 package pro.delfik.bedwars.game;
 
-import lib.I;
+import pro.delfik.lmao.outward.item.I;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,9 +17,10 @@ import pro.delfik.bedwars.world.Schematics;
 import pro.delfik.bedwars.world.WorldUtils;
 import pro.delfik.lmao.core.Person;
 import pro.delfik.lmao.util.Cooldown;
-import pro.delfik.util.Converter;
+import implario.util.Converter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -72,7 +73,7 @@ public class Game {
 	 * @param map     Карта, на которой будет идти игра.
 	 * @param players Отсортированные по командам игроки.
 	 */
-	public Game(Map map, Colors<Person[]> players) {
+	public Game(Map map, Colors<Collection<Person>> players) {
 		
 		// Проверка на наличие свободных карт и запись в список текущих игр.
 		int id = RUNNING.firstEmpty();
@@ -87,7 +88,7 @@ public class Game {
 		objective.setDisplayName("§c§lBed§f§lWars");
 		
 		// Настройка команд
-		teams = players.convert((color, people) -> new BWTeam(color, this, people));
+		teams = players.convert((color, people) -> new BWTeam(color, this, people.toArray(new Person[people.size()])));
 		
 		// Прогрузка мира
 		world = loadWorld();

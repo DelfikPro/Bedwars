@@ -1,7 +1,6 @@
 package pro.delfik.bedwars;
 
-import lib.gui.AdvancedGUI;
-import org.bukkit.event.EventHandler;
+import pro.delfik.lmao.outward.gui.AdvancedGUI;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 

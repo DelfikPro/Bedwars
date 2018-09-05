@@ -1,6 +1,6 @@
 package pro.delfik.bedwars;
 
-import lib.ItemBuilder;
+import pro.delfik.lmao.outward.item.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;

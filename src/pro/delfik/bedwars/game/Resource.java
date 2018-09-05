@@ -1,12 +1,8 @@
 package pro.delfik.bedwars.game;
 
-import lib.ItemBuilder;
+import pro.delfik.lmao.outward.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.EnumMap;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Тип ресурса для покупки вещей в магазине.
