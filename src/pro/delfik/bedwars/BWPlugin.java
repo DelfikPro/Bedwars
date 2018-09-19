@@ -3,6 +3,7 @@ package pro.delfik.bedwars;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import pro.delfik.bedwars.command.CommandBedWars;
+import pro.delfik.bedwars.purchase.Purchase;
 import pro.delfik.lmao.command.handle.LmaoCommand;
 import pro.delfik.lmao.core.Registrar;
 
