@@ -4,10 +4,13 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Game;
+import pro.delfik.bedwars.purchase.Purchase;
 import pro.delfik.lmao.chat.ChatHandler;
 import pro.delfik.lmao.core.Person;
 import pro.delfik.lmao.util.U;
@@ -40,11 +43,30 @@ public class GeneralListener implements Listener {
 
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) switch (e.getClickedBlock().getType()) {
+			case WORKBENCH:
+			case FURNACE:
+			case ANVIL:
+			case ENCHANTMENT_TABLE:
+			case HOPPER:
+			case BREWING_STAND:
+				e.setCancelled(true);
+			case SPONGE:
+				if (e.getPlayer().isSneaking()) break;
+				e.getPlayer().openInventory(Purchase.getInventory());
+				e.setCancelled(true);
+				return;
+		}
 		if (Game.get(e.getPlayer()) != null) return;
 		switch (e.getMaterial()) {
 			case EMERALD:
 
 		}
+	}
+
+	@EventHandler
+	public void onCraft(CraftItemEvent e) {
+		e.setCancelled(true);
 	}
 
 }
