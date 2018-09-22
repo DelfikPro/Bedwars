@@ -18,6 +18,7 @@ public class NewGame {
 
 	public static void update(int slot, GamePreparation gamePreparation) {
 		NEW_GAME.getInventory().setItem(0, ItemBuilder.create(Material.EMERALD_BLOCK,
-				"§f§lИгра " + gamePreparation.getFormat().getTitle(), "§f>> §a§lПрисоединиться §f<<"));
+				"§f§lИгра " + slot, "§aКоманд: §e" + gamePreparation.getSize(), "§f", "§f>> §a§lПрисоединиться §f<<"));
 	}
+
 }

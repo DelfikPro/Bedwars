@@ -52,7 +52,6 @@ public class ConfigReader {
 		String schematic = 		yml.getString("schematic");
 		Vec center = 			Vec.toVec(yml.getString("schematicPosition"));
 		int teamsAmount = 		yml.getInt("teamsAmount");
-		int playersInTeam = 	yml.getInt("playersInTeam");
 		int spectatorY = 		yml.getInt("spectatorY");
 		List<Vec> middleGold = 	toVecList(yml.getStringList("middleGold"));
 		
@@ -83,6 +82,6 @@ public class ConfigReader {
 			}
 			resources.put(color, res);
 		}
-		return new Map(name, schematic, playersInTeam, teamsAmount, center, respawns, resources);
+		return new Map(name, schematic, teamsAmount, center, respawns, resources);
 	}
 }
