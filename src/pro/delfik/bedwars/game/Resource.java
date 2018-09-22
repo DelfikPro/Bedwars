@@ -25,7 +25,7 @@ public enum Resource {
 	 * @param spawnTicks Частота появления ресурса в спавнере в тиках.
 	 */
 	Resource(Material m, String color, String title, String couple, String lot, int spawnTicks) {
-		this.item = new ItemBuilder(m).withDisplayName(title).withLore("§7Можно обменять в магазине", "§7На что-нибудь ценное").build();
+		this.item = new ItemBuilder(m).withDisplayName(color + title).withLore("§7Можно обменять в магазине", "§7На что-нибудь ценное").build();
 		this.title = color + title;
 		this.couple = couple;
 		this.lot = lot;
@@ -69,6 +69,6 @@ public enum Resource {
 	}
 
 	public String represent(int cost) {
-		return Converter.plural(cost, )
+		return color + cost + " " + Converter.plural(cost, one, couple, lot);
 	}
 }
