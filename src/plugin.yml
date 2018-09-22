@@ -1,6 +1,6 @@
 name: Bedwars
 author: DelfikPro
-softdepend: [ImplarioLib, LmaoNetwork]
+softdepend: [LMAONetwork]
 version: 3.0.0
 main: pro.delfik.bedwars.BWPlugin
 commands:
