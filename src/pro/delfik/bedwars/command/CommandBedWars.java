@@ -10,7 +10,13 @@ import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import pro.delfik.bedwars.GameListener;
+import pro.delfik.bedwars.game.Resource;
+import pro.delfik.bedwars.game.stuff.RescuePlatform;
 import pro.delfik.bedwars.preparation.GamePreparation;
+import pro.delfik.bedwars.purchase.Purchase;
 import pro.delfik.lmao.command.handle.CustomException;
 import pro.delfik.lmao.command.handle.LmaoCommand;
 import pro.delfik.lmao.command.handle.NotEnoughArgumentsException;
@@ -29,6 +35,40 @@ public class CommandBedWars extends LmaoCommand {
 	static {
 		functions.put("create", CommandBedWars::create);
 		functions.put("regen", CommandBedWars::regen);
+		functions.put("purchase", CommandBedWars::purchase);
+		functions.put("r", CommandBedWars::resources);
+		functions.put("dbgclicks", CommandBedWars::dbgclicks);
+		functions.put("p", CommandBedWars::platform);
+		functions.put("armor", CommandBedWars::armor);
+	}
+
+	private static String armor(CommandSender commandSender, String[] strings) {
+		Player p = (Player) commandSender;
+		PlayerInventory inv = p.getInventory();
+		for (ItemStack armorContent : inv.getArmorContents()) p.sendMessage("§7§o" + String.valueOf(armorContent));
+		return null;
+	}
+
+	private static String platform(CommandSender commandSender, String[] strings) {
+		new RescuePlatform(Person.get(commandSender));
+		return "§aПлатформа создана.";
+	}
+
+	private static String dbgclicks(CommandSender commandSender, String[] strings) {
+		GameListener.dbgclicks = !GameListener.dbgclicks;
+		return "§aClick Debug Toggled.";
+	}
+
+	private static String resources(CommandSender commandSender, String[] strings) {
+		Player p = ((Player) commandSender);
+		for (Resource r : Resource.values()) p.getInventory().addItem(r.getItem());
+		return "§aРесурсы выданы.";
+	}
+
+	private static String purchase(CommandSender sender, String[] args) {
+		Player p = ((Player) sender);
+		p.openInventory(Purchase.getInventory());
+		return "§aGUI закупа открыт.";
 	}
 
 	private static String regen(CommandSender sender, String[] strings) {
@@ -55,7 +95,7 @@ public class CommandBedWars extends LmaoCommand {
 	}
 
 	public CommandBedWars() {
-		super("bedwars", Rank.KURATOR, "Управление игрой BedWars.");
+		super("bedwars", Rank.TESTER, "Управление игрой BedWars.");
 	}
 
 	@Override
