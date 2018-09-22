@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
@@ -14,10 +15,18 @@ import pro.delfik.bedwars.game.stuff.GPSTracker;
 import pro.delfik.bedwars.game.stuff.HomeTeleportation;
 import pro.delfik.bedwars.game.stuff.RescuePlatform;
 import pro.delfik.bedwars.purchase.Purchase;
-import pro.delfik.lmao.util.Vec3i;
 import pro.delfik.lmao.core.Person;
+import pro.delfik.lmao.util.Vec3i;
 
 public class GameListener implements Listener {
+	public static boolean dbgclicks = false;
+
+	@EventHandler
+	public void inventoryClick(InventoryClickEvent event) {
+		if (!dbgclicks) return;
+		Player p = ((Player) event.getWhoClicked());
+		p.sendMessage("§7[§eDEBUG§7] §aNumberKey: §f" + event.getHotbarButton() + "§a, Action: §f" + event.getAction() + "§a, ClickType: §f" + event.getClick());
+	}
 	
 	
 	@EventHandler
@@ -44,7 +53,7 @@ public class GameListener implements Listener {
 					}
 					break;
 				case ENDER_CHEST:
-					p.openInventory(team.getEnderChest());
+					if (!p.isSneaking()) p.openInventory(team.getEnderChest());
 					break;
 				case BED_BLOCK:
 					if (!e.isBlockInHand() && !p.isSneaking()) {
