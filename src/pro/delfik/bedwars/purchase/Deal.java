@@ -1,5 +1,7 @@
 package pro.delfik.bedwars.purchase;
 
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import pro.delfik.bedwars.game.Resource;
 import pro.delfik.lmao.outward.item.ItemBuilder;
@@ -27,7 +29,11 @@ public class Deal {
 		return product;
 	}
 	public ItemStack getDisplay() {
-		return display != null ? display :
-					   display = new ItemBuilder(product).addLore("§dЦена: " + resource.represent(cost));
+		return display != null ? display : (display = ItemBuilder.addLore(product, "§dЦена: " + resource.represent(cost)));
+	}
+
+	public void equip(HumanEntity p, ClickType click) {
+		// ToDo: Закидывание предметов в командный сундук при СКМ.
+		Purchase.give(p, product);
 	}
 }

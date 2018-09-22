@@ -1,23 +1,35 @@
 package pro.delfik.bedwars.purchase;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import pro.delfik.lmao.outward.inventory.GUI;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
 
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-public class PurchaseGUI extends GUI {
+import static pro.delfik.lmao.outward.inventory.GUI.create;
 
-	private final Collection<Deal> deals;
+public class PurchaseGUI implements Listener {
 
-	public PurchaseGUI(String title, int rows, Collection<Deal> deals) {
-		super(create(rows * 9, title), false);
-		this.deals = deals;
+	private static final Map<String, PurchaseGUI> map = new HashMap<>();
+	private final Deal[] deals;
+	private final Inventory inv;
+
+	public PurchaseGUI(String title, int rows, Deal[] deals) {
+		inv = create(rows * 9, "§f§0" + title);
+		for (Deal deal : this.deals = deals) inv.addItem(deal.getDisplay());
+		inv.setItem(inv.getSize() - 5, Purchase.BACK_TO_MAIN);
+		map.put(inv.getTitle(), this);
 	}
 
-	@Override
-	public void click(InventoryClickEvent event) {
-		Player p = ((Player) event.getWhoClicked());
-		p.sendMessage("§7[§eDEBUG§7] §aNumberKey: §f" + event.getHotbarButton() + "§a, Action: §f" + event.getAction() + "§a, ClickType: §f" + event.getClick());
+	public static PurchaseGUI get(String name) {
+		return map.get(name);
+	}
+
+	public Inventory inv() {
+		return inv;
+	}
+
+	public Deal[] getDeals() {
+		return deals;
 	}
 }
