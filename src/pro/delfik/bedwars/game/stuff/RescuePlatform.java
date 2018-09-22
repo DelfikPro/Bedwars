@@ -24,8 +24,10 @@ public class RescuePlatform {
 		platforms.add(p.getHandle(), this);
 		Location loc = p.getLocation();
 		if (loc.getBlockY() < 5) loc.setY(5);
-		this.blocks = build(loc);
 		p.teleport(loc);
+		loc.subtract(2, 0, 2);
+		this.blocks = build(loc);
+		p.getHandle().setFallDistance(0);
 		new Cooldown("rp" + p.getName(), 10, Collections.singletonList(p), this::remove);
 	}
 	
@@ -44,9 +46,8 @@ public class RescuePlatform {
 		List<Location> list = new ArrayList<>();
 		for (int x = 0; x < 5; x++) {
 			for (int z = 0; z < 5; z++) {
-				Location l = loc.add(x, -3, z);
-				if (x % 2 == 0 && z % 2 == 0) continue;
-				if (x == 2 && z == 2) continue;
+				Location l = new Location(loc.getWorld(), loc.getBlockX() + x, loc.getBlockY() -3, loc.getBlockZ() + z);
+				if (x % 2 == 0 && z % 2 == 0 && (x != 2 || z != 2)) continue;
 				if (l.getBlock().getType() != Material.AIR) continue;
 				l.getBlock().setType(PLATFORM_MATERIAL);
 				list.add(l);
