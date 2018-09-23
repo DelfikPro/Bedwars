@@ -5,7 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pro.delfik.bedwars.command.CommandBedWars;
 import pro.delfik.bedwars.purchase.Purchase;
 import pro.delfik.lmao.command.handle.LmaoCommand;
-import pro.delfik.lmao.core.Registrar;
+import pro.delfik.lmao.util.Registrar;
 
 /**
  * Главный класс плагина, наследующий JavaPlugin.

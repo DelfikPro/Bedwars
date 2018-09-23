@@ -3,7 +3,7 @@ package pro.delfik.bedwars.game.stuff;
 import org.bukkit.entity.Player;
 import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Game;
-import pro.delfik.lmao.core.Person;
+import pro.delfik.lmao.user.Person;
 
 public class GPSTracker {
 	

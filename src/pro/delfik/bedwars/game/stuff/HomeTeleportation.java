@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import pro.delfik.bedwars.Bedwars;
 import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Game;
-import pro.delfik.lmao.core.Person;
+import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.util.Cooldown;
 
 import java.util.Collections;

@@ -15,7 +15,7 @@ import pro.delfik.bedwars.util.FixedArrayList;
 import pro.delfik.bedwars.util.Resources;
 import pro.delfik.bedwars.world.Schematics;
 import pro.delfik.bedwars.world.WorldUtils;
-import pro.delfik.lmao.core.Person;
+import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.util.Cooldown;
 import implario.util.Converter;
 

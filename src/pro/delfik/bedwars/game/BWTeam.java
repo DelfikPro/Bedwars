@@ -9,7 +9,7 @@ import pro.delfik.bedwars.util.FixedArrayList;
 import pro.delfik.bedwars.util.Resources;
 import pro.delfik.lmao.util.Vec;
 import pro.delfik.lmao.util.Vec3i;
-import pro.delfik.lmao.core.Person;
+import pro.delfik.lmao.user.Person;
 
 import java.util.ArrayList;
 import java.util.Collection;

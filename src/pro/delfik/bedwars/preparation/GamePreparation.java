@@ -7,7 +7,7 @@ import pro.delfik.bedwars.game.Game;
 import pro.delfik.bedwars.util.Colors;
 import pro.delfik.bedwars.util.CyclicIterator;
 import pro.delfik.bedwars.util.FixedArrayList;
-import pro.delfik.lmao.core.Person;
+import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.outward.gui.VotingGUI;
 import pro.delfik.lmao.util.Cooldown;
 import pro.delfik.lmao.util.U;

@@ -11,8 +11,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Game;
 import pro.delfik.bedwars.purchase.Purchase;
-import pro.delfik.lmao.chat.ChatHandler;
-import pro.delfik.lmao.core.Person;
+import pro.delfik.lmao.ev.EvChat;
+import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.util.U;
 
 public class GeneralListener implements Listener {
@@ -22,7 +22,7 @@ public class GeneralListener implements Listener {
 		Game g = Game.get(e.getPlayer().getWorld());
 		e.setCancelled(true);
 		if (g == null) {
-			ChatHandler.chat(e.getPlayer().getName(), e.getMessage(), Bedwars.getLobby().getPlayers(), "§7(Лобби) ");
+			EvChat.chat(e.getPlayer().getName(), e.getMessage(), Bedwars.getLobby().getPlayers(), "§7(Лобби) ");
 			return;
 		}
 		BWTeam team = g.getTeam(e.getPlayer().getName());
@@ -38,7 +38,7 @@ public class GeneralListener implements Listener {
 			return;
 		}
 		TextComponent text = U.constructComponent("§7(" + prefix + ") ", e.getPlayer(), "§7: §f" + message);
-		ChatHandler.chat(e.getPlayer().getName(), e.getMessage(), g.getWorld().getPlayers(), prefix);
+		EvChat.chat(e.getPlayer().getName(), e.getMessage(), g.getWorld().getPlayers(), prefix);
 	}
 
 	@EventHandler
