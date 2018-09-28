@@ -13,6 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionType;
+import pro.delfik.bedwars.game.Items;
 import pro.delfik.bedwars.game.Resource;
 import pro.delfik.lmao.outward.inventory.GUI;
 import pro.delfik.lmao.outward.item.ItemBuilder;
@@ -26,24 +27,8 @@ import static java.lang.Integer.min;
 import static pro.delfik.bedwars.game.Resource.BRONZE;
 import static pro.delfik.bedwars.game.Resource.GOLD;
 import static pro.delfik.bedwars.game.Resource.IRON;
-import static pro.delfik.lmao.outward.item.Ench.ARROW_FIRE;
-import static pro.delfik.lmao.outward.item.Ench.ARROW_KNOCKBACK;
-import static pro.delfik.lmao.outward.item.Ench.EFFIECENCY_1;
-import static pro.delfik.lmao.outward.item.Ench.EFFIECENCY_3;
-import static pro.delfik.lmao.outward.item.Ench.FIRE_ASPECT;
-import static pro.delfik.lmao.outward.item.Ench.INFINITY;
-import static pro.delfik.lmao.outward.item.Ench.KNOCKBACK_1;
-import static pro.delfik.lmao.outward.item.Ench.KNOCKBACK_2;
-import static pro.delfik.lmao.outward.item.Ench.POWER_1;
-import static pro.delfik.lmao.outward.item.Ench.POWER_3;
-import static pro.delfik.lmao.outward.item.Ench.PROTECTION_1;
-import static pro.delfik.lmao.outward.item.Ench.PROTECTION_2;
-import static pro.delfik.lmao.outward.item.Ench.PROTECTION_3;
-import static pro.delfik.lmao.outward.item.Ench.SHARPNESS_1;
-import static pro.delfik.lmao.outward.item.Ench.SHARPNESS_2;
-import static pro.delfik.lmao.outward.item.Ench.SHARPNESS_3;
-import static pro.delfik.lmao.outward.item.Ench.SHARPNESS_5;
-import static pro.delfik.lmao.outward.item.Ench.SILK_TOUCH;
+import static pro.delfik.bedwars.purchase.SlotDeal.generify;
+import static pro.delfik.lmao.outward.item.Ench.*;
 import static pro.delfik.lmao.outward.item.ItemBuilder.create;
 
 public class Purchase implements Listener {
@@ -62,7 +47,7 @@ public class Purchase implements Listener {
 					new Deal(new ItemStack(Material.SANDSTONE, 2, (short) 2), BRONZE, 1),
 					new Deal(new ItemStack(Material.ENDER_STONE), BRONZE, 7),
 					new Deal(new ItemStack(Material.IRON_BLOCK), IRON, 3),
-					new Deal(new ItemStack(Material.GLOWSTONE, 4), BRONZE, 15),
+					new Deal(new ItemStack(Material.GLOWSTONE), BRONZE, 4),
 					new Deal(new ItemStack(Material.GLASS), BRONZE, 4),
 					new Deal(new ItemStack(Material.CHEST), IRON, 1),
 					new Deal(create(Material.ENDER_CHEST, "§dГиперсундук", "§a§oРесурсы, положенные в него",
@@ -125,17 +110,19 @@ public class Purchase implements Listener {
 									.enchant(SHARPNESS_5, FIRE_ASPECT, KNOCKBACK_2).build(), GOLD, 30)
 			}), create(Material.IRON_SWORD, "§c§lОружие")),
 
-			new Section(new PurchaseGUI("Луки", 2, new Deal[] {
+			new Section(new PurchaseGUI("Луки", 2, generify(new Deal[] {
 					new Deal(new ItemBuilder(Material.BOW).withDisplayName("§aСпортивный лук").withLore("§7<§f§lОбычный§7>")
 									 .enchant(INFINITY).build(), IRON, 7),
 					new Deal(new ItemBuilder(Material.BOW).withDisplayName("§fБелый арбалет").withLore("§7<§e§lОсобый§7>")
 									 .enchant(INFINITY, POWER_1).build(), GOLD, 1),
 					new Deal(new ItemBuilder(Material.BOW).withDisplayName("§6Чёрный пистолет").withLore("§7<§6§lРедкий§7>")
-									 .enchant(INFINITY, POWER_1, ARROW_FIRE).build(), GOLD, 7),
+									 .enchant(INFINITY, POWER_1, ARROW_FIRE, ARROW_KNOCKBACK).build(), GOLD, 7),
 					new Deal(new ItemBuilder(Material.BOW).withDisplayName("§cТетива смерти").withLore("§7<§d§lЭпический§7>")
 									 .enchant(INFINITY, POWER_3, ARROW_FIRE, ARROW_KNOCKBACK).build(), GOLD, 30),
-					new Deal(create(Material.ARROW, "§6Бесконечный патрон", "§d§o - 'Невероятной судьбы'"), GOLD, 1)
-			}), create(Material.BOW, "§c§lЛуки")),
+					new Deal(create(Material.ARROW, "§6Бесконечный патрон", "§d§o - 'Невероятной судьбы'"), GOLD, 1),
+					new SlotDeal(new ItemBuilder(Material.BOW).withDisplayName("§c§lРепчатый лук").withLore("§e§oЗаставляет врагов плакать", "§7<§c§lЛегендарный§7>")
+									 .enchant(INFINITY, POWER_5, ARROW_KNOCKBACK, ARROW_FIRE).build(), GOLD, 100, 8)
+			})), create(Material.BOW, "§c§lЛуки")),
 
 			new Section(new PurchaseGUI("Хавчик", 2, new Deal[] {
 					new Deal(create(Material.APPLE, "§cНаливное яблочко", "§a§oУважает чувства вегитарианцев."), BRONZE, 1),
@@ -153,6 +140,21 @@ public class Purchase implements Listener {
 					new Deal(new PotionBuilder(PotionType.INVISIBILITY).withDuration(15 * 20).withDisplayName("§7Ведьмин отвар")
 									 .withLore("§a§oПревращает тебя в хамелеона!").build(), IRON, 50),
 			}), new PotionBuilder(PotionType.STRENGTH).withDisplayName("§d§lЗелья").build()),
+
+			new Section(new PurchaseGUI("Разное", 3, generify(new Deal[] {
+					new Deal(new ItemStack(Material.LADDER), BRONZE, 1),
+					new Deal(new ItemStack(Material.WEB), BRONZE, 16),
+					new Deal(new ItemStack(Material.FISHING_ROD), IRON, 5),
+					new Deal(new ItemStack(Material.TNT), GOLD, 5),
+					new Deal(new ItemStack(Material.FLINT_AND_STEEL), IRON, 7),
+					new Deal(new ItemStack(Material.ENDER_PEARL), GOLD, 13),
+
+					new SlotDeal(Items.THOR_BONE, IRON,3, 9),
+					new SlotDeal(Items.RESCUE_PLATFORM, IRON,14, 10),
+					new SlotDeal(Items.HOME_TELEPORTATION, IRON,3, 11),
+					new SlotDeal(Items.GPS_TRACKER, IRON,10, 12),
+					new SlotDeal(ItemBuilder.create(Material.STRING, "§aШёлковая нить", "§2Первый сорт."), GOLD, 2, 13)
+			})), ItemBuilder.create(Material.TNT, "§6§lРазное")),
 
 			new Section(new PurchaseGUI("Обмен ресурсов", 2, new Deal[] {
 					new Deal(ItemBuilder.setAmount(BRONZE.getItem(), 32), IRON, 1),
@@ -200,7 +202,8 @@ public class Purchase implements Listener {
 			return;
 		}
 		if (slot >= deals.length) return;
-		Deal deal = deals[event.getSlot()];
+		Deal deal = deals[slot];
+		if (deal == null) return;
 		Purchase.purchase(event.getWhoClicked(), deal, event.getClick());
 		if (deal.getClass().equals(Deal.class) && event.isShiftClick()) for (int i = 0; i < 9; i++) purchase(event.getWhoClicked(), deal, event.getClick());
 		((Player) event.getWhoClicked()).updateInventory();
