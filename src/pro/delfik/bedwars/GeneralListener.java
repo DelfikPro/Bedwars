@@ -1,19 +1,31 @@
 package pro.delfik.bedwars;
 
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Game;
 import pro.delfik.bedwars.purchase.Purchase;
 import pro.delfik.lmao.ev.EvChat;
+import pro.delfik.lmao.outward.item.I;
 import pro.delfik.lmao.user.Person;
+import pro.delfik.lmao.util.TimedMap;
 import pro.delfik.lmao.util.U;
+
+import java.util.HashMap;
 
 public class GeneralListener implements Listener {
 
@@ -51,6 +63,7 @@ public class GeneralListener implements Listener {
 			case HOPPER:
 			case BREWING_STAND:
 				e.setCancelled(true);
+				break;
 			case SPONGE:
 				if (e.getPlayer().isSneaking()) break;
 				e.getPlayer().openInventory(Purchase.getInventory());
@@ -62,6 +75,52 @@ public class GeneralListener implements Listener {
 			case EMERALD:
 
 		}
+	}
+
+	private static final HashMap<Player, ItemStack[]> invisibleArmor = new HashMap<>();
+
+	@EventHandler
+	public void onConsume(PlayerItemConsumeEvent e) {
+		final Player p = e.getPlayer();
+		ItemStack item = e.getItem();
+		if (item.getType() != Material.POTION) return;
+		final int slot = e.getPlayer().getInventory().getHeldItemSlot();
+		I.delay(() -> {
+			ItemStack i = p.getInventory().getItem(slot);
+			if (i != null && i.getType() == Material.GLASS_BOTTLE) p.getInventory().setItem(slot, null);
+		}, 0);
+		if (item.getDurability() == 14) {
+			Person.get(p).clearArrows();
+			invisibleArmor.put(p, p.getInventory().getArmorContents());
+			p.getInventory().setArmorContents(null);
+			I.delay(() -> p.getInventory().setArmorContents(invisibleArmor.remove(p)), 300);
+		}
+	}
+
+	public static final TimedMap<Player, String> lastDamage = new TimedMap<>(10);
+
+	@EventHandler
+	public void onDamage(EntityDamageByEntityEvent e) {
+		if (!(e.getEntity() instanceof Player)) return;
+		if (!(e.getDamager() instanceof Player)) return;
+		lastDamage.add(((Player) e.getEntity()), e.getDamager().getName());
+	}
+
+	@EventHandler
+	public void onDeath(PlayerDeathEvent e) {
+		invisibleArmor.remove(e.getEntity());
+		e.setDroppedExp(0);
+		e.setKeepInventory(true);
+		String killer = lastDamage.get(e.getEntity());
+		Player k = Bukkit.getPlayer(killer);
+		if (k != null) k.giveExpLevels(1);
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onRespawn(PlayerRespawnEvent e) {
+		e.getPlayer().getInventory().clear();
+		e.getPlayer().getInventory().setArmorContents(null);
+		e.getPlayer().setExp(0);
 	}
 
 	@EventHandler
