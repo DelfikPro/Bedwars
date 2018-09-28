@@ -1,10 +1,13 @@
 package pro.delfik.bedwars.purchase;
 
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import pro.delfik.bedwars.game.Resource;
 import pro.delfik.lmao.outward.item.ItemBuilder;
+
+import java.util.EnumSet;
 
 public class Deal {
 
