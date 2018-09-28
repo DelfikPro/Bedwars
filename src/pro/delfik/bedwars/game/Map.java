@@ -8,10 +8,12 @@ import pro.delfik.bedwars.util.Colors;
 import pro.delfik.bedwars.util.CyclicIterator;
 import pro.delfik.bedwars.util.Resources;
 import pro.delfik.lmao.util.Vec;
+import pro.delfik.lmao.util.Vec3i;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public class Map {
@@ -67,6 +69,21 @@ public class Map {
 	
 	public Vec getCenter() {
 		return center;
+	}
+
+	public Color nearestTeam(Location loc) {
+		Vec3i vec = Vec3i.fromLocation(loc);
+		int smallest = 0xffffffff;
+		Color nearest = null;
+		for (Entry<Color, CyclicIterator<Vec>> e : spawns.entrySet()) {
+			Vec l = e.getValue().current();
+			int s = l.distanceIntSquared(vec);
+			if (s >= smallest) {
+				smallest = s;
+				nearest = e.getKey();
+			}
+		}
+		return nearest;
 	}
 	
 	/**
