@@ -16,7 +16,10 @@ public class PurchaseGUI implements Listener {
 
 	public PurchaseGUI(String title, int rows, Deal[] deals) {
 		inv = create(rows * 9, "§f§0" + title);
-		for (Deal deal : this.deals = deals) inv.addItem(deal.getDisplay());
+		for (Deal deal : this.deals = deals) if (deal != null) {
+			if (deal instanceof SlotDeal) inv.setItem(((SlotDeal) deal).getSlot(), deal.getDisplay());
+			else inv.addItem(deal.getDisplay());
+		}
 		inv.setItem(inv.getSize() - 5, Purchase.BACK_TO_MAIN);
 		map.put(inv.getTitle(), this);
 	}
