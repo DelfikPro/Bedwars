@@ -1,22 +1,23 @@
 package pro.delfik.bedwars.game;
 
 public enum Color {
-	RED("§c", "Красные", 14, org.bukkit.Color.RED),
-	BLUE("§9", "Синие", 11, org.bukkit.Color.BLUE);
+	RED("§c", "Красные", 14, org.bukkit.Color.RED, "Красную"),
+	BLUE("§9", "Синие", 11, org.bukkit.Color.BLUE, "Синюю");
 	
 	// Костыль для получения цвета команды по цвету шерсти
 	private static final Color[] byWool = new Color[16];
 	static {for (Color c : values()) byWool[c.ordinal()] = c;}
 	
-	private final String prefix, title;
+	private final String prefix, title, bed;
 	private final byte woolColor;
 	private final org.bukkit.Color armorColor;
 	
-	Color(String prefix, String name, int woolColor, org.bukkit.Color armorColor) {
+	Color(String prefix, String name, int woolColor, org.bukkit.Color armorColor, String bed) {
 		this.prefix = prefix;
 		this.title = name;
 		this.woolColor = (byte) woolColor;
 		this.armorColor = armorColor;
+		this.bed = bed;
 	}
 	
 	/**
@@ -60,5 +61,9 @@ public enum Color {
 		} catch (IllegalArgumentException | NullPointerException ex) {
 			return null;
 		}
+	}
+
+	public String getBedBroken() {
+		return prefix + bed + " кровать";
 	}
 }
