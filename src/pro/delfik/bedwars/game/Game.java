@@ -18,6 +18,7 @@ import pro.delfik.bedwars.world.WorldUtils;
 import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.util.Cooldown;
 import implario.util.Converter;
+import pro.delfik.lmao.util.U;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,7 +89,7 @@ public class Game {
 		objective.setDisplayName("§c§lBed§f§lWars");
 		
 		// Настройка команд
-		teams = players.convert((color, people) -> new BWTeam(color, this, people.toArray(new Person[people.size()])));
+		teams = players.convert((color, people) -> new BWTeam(color, this, people.toArray(new Person[0])));
 		
 		// Прогрузка мира
 		world = loadWorld();
@@ -174,6 +175,20 @@ public class Game {
 					t.getResourceSpawners().get(resource).forEach(ResourceSpawner::spawn);
 			}, resource.getSpawnTicks());
 		}
+	}
+
+	public void destroyBed(Color color, Player p) {
+		BWTeam team = teams.get(color);
+		if (!team.hasBed()) {
+			p.sendMessage("§cКровать этой команды уже сломана. Что вы, б***ь, вообще делали?");
+			return;
+		}
+		for (Person player : team.getPlayers()) {
+			player.sendTitle("Минус бедка пацаны");
+			if (p == null) player.sendTitle("§7Никто не знает, кто сломал кровать...");
+			player.sendSubtitle("Хуесосина §7" + p.getDisplayName() + "§f разъебал нашу бедку");
+		}
+		forPlayers(player -> U.msg(player.getHandle(), p, " разрушил " + color.getBedBroken()));
 	}
 	
 	public Map getMap() {
