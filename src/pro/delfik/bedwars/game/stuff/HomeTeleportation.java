@@ -1,9 +1,7 @@
 package pro.delfik.bedwars.game.stuff;
 
-import pro.delfik.lmao.outward.item.ItemBuilder;
-import org.bukkit.Material;
+import pro.delfik.bedwars.game.Items;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import pro.delfik.bedwars.Bedwars;
 import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Game;
@@ -16,8 +14,7 @@ import java.util.Map;
 
 public class HomeTeleportation {
 	private static final Map<String, HomeTeleportation> teleportating = new HashMap<>();
-	public static final ItemStack ITEM = ItemBuilder.create(Material.SULPHUR, "§f>> §e§lВжух на базу §f<<");
-	
+
 	private final Person p;
 	private final BWTeam team;
 	private final Game game;
@@ -35,7 +32,7 @@ public class HomeTeleportation {
 		cd.cancel();
 		teleportating.remove(p.getName());
 		p.sendSubtitle("§cТелепортация отменена.");
-		Bedwars.give(p.getHandle(), ITEM);
+		Bedwars.give(p.getHandle(), Items.HOME_TELEPORTATION);
 		p.sendTitle("");
 	}
 	
