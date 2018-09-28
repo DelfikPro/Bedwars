@@ -31,4 +31,9 @@ public class CyclicIterator<T> implements Iterator<T> {
 	public int size() {
 		return array.length;
 	}
+
+	@SuppressWarnings("uncheked")
+	public T current() {
+		return (T) array[pos];
+	}
 }
