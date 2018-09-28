@@ -35,11 +35,17 @@ public class CommandBedWars extends LmaoCommand {
 	static {
 		functions.put("create", CommandBedWars::create);
 		functions.put("regen", CommandBedWars::regen);
-		functions.put("purchase", CommandBedWars::purchase);
+		functions.put("pu", CommandBedWars::purchase);
 		functions.put("r", CommandBedWars::resources);
 		functions.put("dbgclicks", CommandBedWars::dbgclicks);
 		functions.put("p", CommandBedWars::platform);
 		functions.put("armor", CommandBedWars::armor);
+		functions.put("ab", CommandBedWars::actionbar);
+	}
+
+	private static String actionbar(CommandSender commandSender, String[] strings) {
+		Person.get(commandSender).sendActionBar(Converter.mergeArray(strings, 0, " ").replace('&', '\u00a7'));
+		return null;
 	}
 
 	private static String armor(CommandSender commandSender, String[] strings) {
