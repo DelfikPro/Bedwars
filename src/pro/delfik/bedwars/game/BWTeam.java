@@ -7,9 +7,9 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
 import pro.delfik.bedwars.util.FixedArrayList;
 import pro.delfik.bedwars.util.Resources;
+import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.util.Vec;
 import pro.delfik.lmao.util.Vec3i;
-import pro.delfik.lmao.user.Person;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +37,8 @@ public class BWTeam {
 	
 	// Эндер-сундук команды
 	private final Inventory enderChest = Bukkit.createInventory(null, 18, "§5Межпространственный чемодан");
+
+	private boolean hasBed = true;
 	
 	public BWTeam(Color c, Game game, Person[] players) {
 		this.color = c;
@@ -98,5 +100,9 @@ public class BWTeam {
 	
 	public Inventory getEnderChest() {
 		return enderChest;
+	}
+
+	public boolean hasBed() {
+		return hasBed;
 	}
 }
