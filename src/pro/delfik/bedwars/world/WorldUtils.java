@@ -1,10 +1,6 @@
 package pro.delfik.bedwars.world;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import pro.delfik.bedwars.Bedwars;
 
@@ -53,6 +49,13 @@ public class WorldUtils {
 		c.generatorSettings("3;1*minecraft:air;127;");
 		c.generateStructures(false);
 		w = Bukkit.createWorld(c);
+		w.setMonsterSpawnLimit(0);
+		w.setGameRuleValue("doDaylightCycle", "false");
+		w.setGameRuleValue("doMobSpawning", "false");
+		w.setGameRuleValue("randomTickSpeed", "0");
+		w.setGameRuleValue("showDeathMessages", "false");
+		w.setGameRuleValue("mobGriefing", "false");
+		w.setGameRuleValue("doFireTick", "false");
 		return w;
 		
 	}

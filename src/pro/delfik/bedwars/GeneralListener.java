@@ -2,6 +2,7 @@ package pro.delfik.bedwars;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,7 +51,7 @@ public class GeneralListener implements Listener {
 			return;
 		}
 		TextComponent text = U.constructComponent("§7(" + prefix + ") ", e.getPlayer(), "§7: §f" + message);
-		EvChat.chat(e.getPlayer().getName(), e.getMessage(), g.getWorld().getPlayers(), prefix);
+		EvChat.chat(e.getPlayer().getName(), message, g.getWorld().getPlayers(), prefix);
 	}
 
 	@EventHandler
@@ -62,7 +63,7 @@ public class GeneralListener implements Listener {
 			case ENCHANTMENT_TABLE:
 			case HOPPER:
 			case BREWING_STAND:
-				e.setCancelled(true);
+				if (e.getPlayer().getGameMode() != GameMode.CREATIVE) e.setCancelled(true);
 				break;
 			case SPONGE:
 				if (e.getPlayer().isSneaking()) break;
@@ -112,15 +113,18 @@ public class GeneralListener implements Listener {
 		e.setDroppedExp(0);
 		e.setKeepInventory(true);
 		String killer = lastDamage.get(e.getEntity());
+		if (killer == null) return;
 		Player k = Bukkit.getPlayer(killer);
 		if (k != null) k.giveExpLevels(1);
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onRespawn(PlayerRespawnEvent e) {
-		e.getPlayer().getInventory().clear();
-		e.getPlayer().getInventory().setArmorContents(null);
-		e.getPlayer().setExp(0);
+		Player p = e.getPlayer();
+		p.getInventory().clear();
+		p.getInventory().setArmorContents(null);
+		p.setExp(0);
+		Person.get(p).clearArrows();
 	}
 
 	@EventHandler

@@ -19,14 +19,13 @@ import pro.delfik.lmao.outward.inventory.GUI;
 import pro.delfik.lmao.outward.item.ItemBuilder;
 import pro.delfik.lmao.outward.item.PotionBuilder;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static implario.util.Converter.asList;
 import static java.lang.Integer.min;
-import static pro.delfik.bedwars.game.Resource.BRONZE;
-import static pro.delfik.bedwars.game.Resource.GOLD;
-import static pro.delfik.bedwars.game.Resource.IRON;
+import static pro.delfik.bedwars.game.Resource.*;
 import static pro.delfik.bedwars.purchase.SlotDeal.generify;
 import static pro.delfik.lmao.outward.item.Ench.*;
 import static pro.delfik.lmao.outward.item.ItemBuilder.create;
@@ -34,12 +33,26 @@ import static pro.delfik.lmao.outward.item.ItemBuilder.create;
 public class Purchase implements Listener {
 
 	public static final ItemStack BACK_TO_MAIN = create(Material.BED, "§e>> §c§lНазад§e <<");
-	private static final GUI gui = new GUI(Bukkit.createInventory(null, 27, "§0§l- TESTING -"), false) {
+	private static final GUI gui = new GUI(Bukkit.createInventory(null, 27, "§0§5§lМагазин"), false) {
 		@Override
 		public void click(InventoryClickEvent event) {
 			shopClick(event);
 		}
 	};
+
+	private static final GUI itemSelection = new GUI(GUI.create(54, "§5§lВыберите предмет:"), false) {
+		@Override
+		public void click(InventoryClickEvent event) {
+			selectItem(event.getWhoClicked(), event.getSlot());
+		}
+	};
+
+	private static final HashMap<Player, Selection> selecting = new HashMap<>();
+
+	private static void selectItem(HumanEntity p, int slot) {
+
+	}
+
 	private static final List<Section> sections = asList(
 
 			// Блоки
@@ -52,7 +65,7 @@ public class Purchase implements Listener {
 					new Deal(new ItemStack(Material.CHEST), IRON, 1),
 					new Deal(create(Material.ENDER_CHEST, "§dГиперсундук", "§a§oРесурсы, положенные в него",
 							"§a§oМожно забрать из любого другого гиперсундука.", "§f", "§a§oДоступ к этому сундуку есть только у вашей команды."), GOLD, 1)
-			}), create(Material.QUARTZ_BLOCK, "§a§lБлоки")),
+			}), create(Material.QUARTZ_BLOCK, "§a§lБлоки","§c§oР§6§oа§e§oз§a§oн§b§oо§3§oц§9§oв§5§oе§d§oт§c§oн§6§oы§e§oе кубики!")),
 
 			new Section(new PurchaseGUI("Броня", 2, new Deal[] {
 
@@ -87,7 +100,7 @@ public class Purchase implements Listener {
 
 					new ArmorDeal(GOLD, 8, null, new ItemBuilder(Material.DIAMOND_CHESTPLATE)
 						.enchant(PROTECTION_3).withDisplayName("§bНагрудник").withLore("§7<§c§lЛегендарный§7>").build(), null, null),
-			}), create(Material.DIAMOND_CHESTPLATE, "§e§lБроня")),
+			}), create(Material.DIAMOND_CHESTPLATE, "§e§lБроня", "§e§oУкрепи свой имунитет при помощи", "§e§oДревней протосской брони", "§e§oВсего за 7.99$ золотом!")),
 
 			new Section(new PurchaseGUI("Инструменты", 2, new Deal[] {
 					new Deal(new ItemBuilder(Material.STONE_PICKAXE).withDisplayName("§fКирка шахтёра").withLore("§7<§f§lОбычная§7>").enchant(EFFIECENCY_1).build(), BRONZE, 4),
@@ -96,7 +109,7 @@ public class Purchase implements Listener {
 									 .enchant(EFFIECENCY_1, SILK_TOUCH).build(), GOLD, 1),
 					new Deal(new ItemBuilder(Material.DIAMOND_PICKAXE).withDisplayName("§cКирка.").withLore("§e§oИ этим всё сказано.", "§7<§c§lЛегендарная§7>")
 									 .enchant(EFFIECENCY_3, FIRE_ASPECT, KNOCKBACK_1).build(), GOLD, 3),
-			}), create(Material.IRON_PICKAXE, "§e§lИнструменты")),
+			}), create(Material.IRON_PICKAXE, "§e§lИнструменты", "§e§oАрсенал грифера:", "§e§oЛомать, разрушать, уничтожать, разбивать!")),
 
 			// Оружие
 			new Section(new PurchaseGUI("Оружие", 2, new Deal[] {
@@ -108,7 +121,7 @@ public class Purchase implements Listener {
 									.enchant(SHARPNESS_3, KNOCKBACK_1).build(), GOLD, 6),
 					new Deal(new ItemBuilder(Material.DIAMOND_SWORD).withDisplayName("§cКровавая Мэри").withLore("§7<§c§lЛегендарный§7>")
 									.enchant(SHARPNESS_5, FIRE_ASPECT, KNOCKBACK_2).build(), GOLD, 30)
-			}), create(Material.IRON_SWORD, "§c§lОружие")),
+			}), create(Material.IRON_SWORD, "§c§lОружие", "§e§oОружие ближнего боя.", "§e§oЗатыкай врагов своим ЛКМ-ом до смерти!")),
 
 			new Section(new PurchaseGUI("Луки", 2, generify(new Deal[] {
 					new Deal(new ItemBuilder(Material.BOW).withDisplayName("§aСпортивный лук").withLore("§7<§f§lОбычный§7>")
@@ -122,7 +135,7 @@ public class Purchase implements Listener {
 					new Deal(create(Material.ARROW, "§6Бесконечный патрон", "§d§o - 'Невероятной судьбы'"), GOLD, 1),
 					new SlotDeal(new ItemBuilder(Material.BOW).withDisplayName("§c§lРепчатый лук").withLore("§e§oЗаставляет врагов плакать", "§7<§c§lЛегендарный§7>")
 									 .enchant(INFINITY, POWER_5, ARROW_KNOCKBACK, ARROW_FIRE).build(), GOLD, 100, 8)
-			})), create(Material.BOW, "§c§lЛуки")),
+			})), create(Material.BOW, "§c§lЛуки", "§e§oОружие для дальних дистанций.", "§6§oОсторожно:", "§e§oВас могут обвинить в лукодрочерстве!")),
 
 			new Section(new PurchaseGUI("Хавчик", 2, new Deal[] {
 					new Deal(create(Material.APPLE, "§cНаливное яблочко", "§a§oУважает чувства вегитарианцев."), BRONZE, 1),
@@ -130,7 +143,7 @@ public class Purchase implements Listener {
 					new Deal(create(Material.CAKE, "§cБисквитный торт", "§a§oУважает чувства вегитарианцев."), BRONZE, 16),
 					new Deal(create(Material.GOLDEN_APPLE, "§6Драгоценный фрукт", "§cЗолото 585-ой пробы, сертифицированное §lВАК",
 							"§a§oУважает чувства вегитарианцев."), GOLD, 2),
-			}), create(Material.APPLE, "§d§lХавчик :>")),
+			}), create(Material.APPLE, "§d§lКушац!", "§e§oНям-ням!")),
 
 			new Section(new PurchaseGUI("Зелья", 2, new Deal[] {
 					new Deal(new PotionBuilder(PotionType.INSTANT_HEAL).withDisplayName("§dАптечка").build(), IRON, 3),
@@ -139,7 +152,7 @@ public class Purchase implements Listener {
 					new Deal(new PotionBuilder(PotionType.STRENGTH).withDuration(180 * 20).withDisplayName("§cОлимпийский допинг").build(), GOLD, 4),
 					new Deal(new PotionBuilder(PotionType.INVISIBILITY).withDuration(15 * 20).withDisplayName("§7Ведьмин отвар")
 									 .withLore("§a§oПревращает тебя в хамелеона!").build(), IRON, 50),
-			}), new PotionBuilder(PotionType.STRENGTH).withDisplayName("§d§lЗелья").build()),
+			}), new PotionBuilder(PotionType.STRENGTH).withDisplayName("§d§lЗелья").withLore("§e§oРаскрой свою мощь при помощи", "§e§oТаинственной магии алхимиков!").build()),
 
 			new Section(new PurchaseGUI("Разное", 3, generify(new Deal[] {
 					new Deal(new ItemStack(Material.LADDER), BRONZE, 1),
@@ -154,15 +167,20 @@ public class Purchase implements Listener {
 					new SlotDeal(Items.HOME_TELEPORTATION, IRON,3, 11),
 					new SlotDeal(Items.GPS_TRACKER, IRON,10, 12),
 					new SlotDeal(ItemBuilder.create(Material.STRING, "§aШёлковая нить", "§2Первый сорт."), GOLD, 2, 13)
-			})), ItemBuilder.create(Material.TNT, "§6§lРазное")),
+			})), Material.TNT, "§6§lРазное", "§e§oВсё, чего желает ваша душа:\n§e§oПаутинка, спасительные платформы,\n§e§oШпионские гаджеты, и даже...\n§c§oВзрывчатка!"),
 
 			new Section(new PurchaseGUI("Обмен ресурсов", 2, new Deal[] {
 					new Deal(ItemBuilder.setAmount(BRONZE.getItem(), 32), IRON, 1),
 					new Deal(ItemBuilder.setAmount(IRON.getItem(), 1), BRONZE, 48),
 					new Deal(ItemBuilder.setAmount(GOLD.getItem(), 1), IRON, 14),
 					new Deal(ItemBuilder.setAmount(IRON.getItem(), 7), GOLD, 1)
-			}), create(Material.GOLD_INGOT, "§eОбмен ресурсов"))
+			}), Material.GOLD_INGOT, "§e§lОбмен ресурсов", "§e§oЗдесь можно получить дорогие ресурсы\n§e§oЗа дешёвые, и наоборот.")
 	);
+
+	static {
+
+	}
+
 	public static Inventory getInventory() {
 		return gui.inv();
 	}
@@ -237,10 +255,14 @@ public class Purchase implements Listener {
 		private final PurchaseGUI gui;
 		private final ItemStack icon;
 
-		public Section(PurchaseGUI gui, ItemStack icon) {
+		public Section(PurchaseGUI gui, ItemStack item) {
 			this.gui = gui;
-			this.icon = icon;
+			this.icon = item;
 			Purchase.gui.inv().addItem(icon);
+		}
+
+		public Section(PurchaseGUI gui, Material m, String title, String description) {
+			this(gui, ItemBuilder.create(m, title, description.split("\n")));
 		}
 		public ItemStack getIcon() {
 			return icon;
@@ -248,5 +270,9 @@ public class Purchase implements Listener {
 		public PurchaseGUI getGui() {
 			return gui;
 		}
+	}
+
+	public static class Selection {
+
 	}
 }

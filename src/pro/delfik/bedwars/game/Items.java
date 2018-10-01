@@ -2,6 +2,7 @@ package pro.delfik.bedwars.game;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import pro.delfik.bedwars.util.CyclicIterator;
 import pro.delfik.lmao.outward.item.ItemBuilder;
 
 public class Items {
@@ -13,4 +14,19 @@ public class Items {
 	public static final ItemStack GPS_TRACKER = ItemBuilder.create(Material.COMPASS, "§aGPS-Трекер", "§e§oСтрелочка указывает на ближайшего врага.",
 			"§e§oПри нажатии вычисляет расстояние до врага.");
 
+	public static final ItemStack JOIN_GAME = ItemBuilder.create(Material.EMERALD, "§f>> §a§lИграть §f<<");
+	public static final ItemStack BACK_TO_LOBBY = ItemBuilder.create(Material.COMPASS, "§f>> §c§lВ лобби §f<<");
+
+	private static final CyclicIterator<ItemStack> SWORDS = new CyclicIterator<>(new ItemStack[] {
+			ItemBuilder.create(Material.STONE_SWORD, "§fЕгипетский топор", "§a§oВ египте были топоры?"),
+			ItemBuilder.create(Material.STONE_SWORD, "§fКаменная шпага", "§a§oПринадлежит чемпиону по фехтованию"),
+			ItemBuilder.create(Material.STONE_SWORD, "§d§lСамое мощное оружие в игре", "§a(нет)"),
+			ItemBuilder.create(Material.STONE_SWORD, "§6Чесалка для спины", "§a§oМуррррррр"),
+			ItemBuilder.create(Material.STONE_SWORD, "§fКаменный меч", "§a§oЭтот меч был воткнут в священную", "§a§oГору §f§oВульто§a§o древними друидами.",
+					"§a§oТолько достойный сможет вынуть", "§a§oЕго из скалы и использовать в полную мощь."),
+	});
+
+	public static ItemStack getDeafultSword() {
+		return SWORDS.next();
+	}
 }

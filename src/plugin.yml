@@ -7,4 +7,4 @@ commands:
   bedwars:
     aliases: [bw]
   kill:
-    aliases: [dupe, hack, fly]
+    aliases: [dupe, hack, fly, harakiri]

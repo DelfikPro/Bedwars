@@ -24,7 +24,7 @@ public class CyclicIterator<T> implements Iterator<T> {
 	@SuppressWarnings("uncheked")
 	@Override
 	public T next() {
-		if (array.length >= ++pos) pos = 0;
+		if (array.length <= ++pos) pos = 0;
 		return (T) array[pos];
 	}
 	

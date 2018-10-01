@@ -9,20 +9,29 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import pro.delfik.bedwars.GameListener;
+import pro.delfik.bedwars.game.BWTeam;
+import pro.delfik.bedwars.game.Color;
+import pro.delfik.bedwars.game.Game;
 import pro.delfik.bedwars.game.Resource;
 import pro.delfik.bedwars.game.stuff.RescuePlatform;
 import pro.delfik.bedwars.preparation.GamePreparation;
 import pro.delfik.bedwars.purchase.Purchase;
+import pro.delfik.bedwars.util.Colors;
+import pro.delfik.bedwars.util.CyclicIterator;
 import pro.delfik.lmao.command.handle.CustomException;
 import pro.delfik.lmao.command.handle.LmaoCommand;
 import pro.delfik.lmao.command.handle.NotEnoughArgumentsException;
 import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.util.U;
+import pro.delfik.lmao.util.Vec;
+import pro.delfik.lmao.util.Vec3i;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +50,80 @@ public class CommandBedWars extends LmaoCommand {
 		functions.put("p", CommandBedWars::platform);
 		functions.put("armor", CommandBedWars::armor);
 		functions.put("ab", CommandBedWars::actionbar);
+		functions.put("ezic", CommandBedWars::ezic);
+		functions.put("testgame", CommandBedWars::testgame);
+		functions.put("tp", CommandBedWars::tp);
+		functions.put("worldlist", CommandBedWars::worldlist);
+		functions.put("near", CommandBedWars::near);
+		functions.put("info", CommandBedWars::alive);
+		functions.put("ise", CommandBedWars::issectionempty);
+	}
+
+	private static String issectionempty(CommandSender commandSender, String[] strings) {
+		Chunk c = ((Player) commandSender).getLocation().getChunk();
+		requireArgs(strings, 1, "[Section]");
+		return "§eisSectionEmpty - §" + (c.getChunkSnapshot().isSectionEmpty(requireInt(strings[0])) ? "atrue" : "cfalse");
+	}
+
+	private static String alive(CommandSender commandSender, String[] strings) {
+		Player p = (Player) commandSender;
+		for (Game g : Game.running()) if (g != null) p.sendMessage("§aGame-" + g.getId() + "§a: §f" + g.getWorld().getName());
+		Game g = Game.get(p);
+		if (g == null) throw new CustomException("§cВы не в игре.");
+		p.sendMessage("§aИгра §e" + g.getId() + "§a, Мир - §e" + g.getWorld().getName());
+		for (BWTeam t : g.getTeams().values()) {
+			p.sendMessage(t.getColor() + "§a: " + Converter.merge(t.getPlayers(), Person::getDisplayName, "§a, §7"));
+			p.sendMessage("§aКровать в наличии: §e" + t.hasBed() + "§a, поражение: §e" + t.defeated());
+		}
+		return null;
+	}
+
+	private static String near(CommandSender commandSender, String[] strings) {
+		Player p = (Player) commandSender;
+		Vec3i vec = Vec3i.fromLocation(p.getLocation());
+		int smallest = Integer.MAX_VALUE;
+		Color nearest = null;
+		pro.delfik.bedwars.game.Map map = Game.get(p).getMap();
+		for (Map.Entry<Color, CyclicIterator<Vec>> e : map.getSpawns().entrySet()) {
+			Vec l = e.getValue().current();
+			int s = l.distanceIntSquared(vec);
+			p.sendMessage("§aРасстояние до команды §e" + e.getKey() + "§a - " + Math.sqrt(s) + " м.");
+			if (s <= smallest) {
+				smallest = s;
+				nearest = e.getKey();
+			}
+		}
+		return "§aБлижайшая команда - " + nearest;
+	}
+
+	private static String worldlist(CommandSender commandSender, String[] strings) {
+		for (org.bukkit.World world : Bukkit.getWorlds()) commandSender.sendMessage("§a- " + world.getName());
+		return "§aСписок миров приведён.";
+	}
+
+	private static String tp(CommandSender commandSender, String[] strings) {
+		requireArgs(strings, 1, "[Мир]");
+		((Player) commandSender).teleport(pro.delfik.bedwars.game.Map.get("aeris").getCenter().toLocation(Bukkit.getWorld(strings[0])));
+		return "§aВы были телепортированы в мир §e" + ((Player) commandSender).getWorld().getName();
+	}
+
+	private static String testgame(CommandSender commandSender, String[] args) {
+		requireArgs(args, 2, "[Игрок] [Карта]");
+		Player p = requirePlayer(args[0]);
+		pro.delfik.bedwars.game.Map map = pro.delfik.bedwars.game.Map.get(args[1]);
+		Colors<Collection<Person>> colors = new Colors<>();
+		colors.put(Color.RED, Converter.asList(Person.get(p)));
+		colors.put(Color.BLUE, Converter.asList(Person.get(commandSender)));
+		Game game = new Game(map, colors);
+		return "§aВсё супер лолшто";
+	}
+
+	private static String ezic(CommandSender commandSender, String[] strings) {
+		Person p = Person.get(commandSender);
+		requireArgs(strings, 1, "[Число]");
+		p.getHandle().getPlayer().getPlayer();
+		((CraftPlayer) p.getHandle()).getHandle().getDataWatcher().watch(9, (byte) requireInt(strings[0]));
+		return "§d§lТы теперь ЙОБЗЫК = МИЛЫЙ!!!";
 	}
 
 	private static String actionbar(CommandSender commandSender, String[] strings) {

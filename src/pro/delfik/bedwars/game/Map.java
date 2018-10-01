@@ -1,5 +1,8 @@
 package pro.delfik.bedwars.game;
 
+import com.boydti.fawe.object.schematic.Schematic;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import implario.util.Converter;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,6 +13,8 @@ import pro.delfik.bedwars.util.Resources;
 import pro.delfik.lmao.util.Vec;
 import pro.delfik.lmao.util.Vec3i;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +32,7 @@ public class Map {
 	private final Colors<CyclicIterator<Vec>> spawns;
 	private final Colors<Resources<List<Vec>>> resourceSpawners;
 	private final Material material;
+	private final Vector min, max;
 
 	/**
 	 * Создаёт инстанцию карты, которая потом используется всё время.
@@ -46,11 +52,24 @@ public class Map {
 		this.spawns = spawns.convert(CyclicIterator::new);
 		this.resourceSpawners = resources;
 		this.material = Converter.randomEnum(Material.class);
+		File file = new File("plugins/WorldEdit/schematics/" + schematic + ".schematic");
+		try {
+			Schematic sch = ClipboardFormat.findByFile(file).load(file);
+			min = sch.getClipboard().getMinimumPoint();
+			max = sch.getClipboard().getMaximumPoint();
+		} catch (IOException e) {
+			throw new RuntimeException("Невозможно взять точки схематика.");
+		}
 		if (!FORMAT.containsKey(teams)) FORMAT.put(teams, new ArrayList<>());
 		FORMAT.get(teams).add(this);
 		LIST.put(schematic, this);
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Map[" + name + ": " + schematic + "]";
+	}
+
 	public Colors<Resources<List<Vec>>> getResourceSpawners() {
 		return resourceSpawners;
 	}
@@ -73,12 +92,12 @@ public class Map {
 
 	public Color nearestTeam(Location loc) {
 		Vec3i vec = Vec3i.fromLocation(loc);
-		int smallest = 0xffffffff;
+		int smallest = Integer.MAX_VALUE;
 		Color nearest = null;
 		for (Entry<Color, CyclicIterator<Vec>> e : spawns.entrySet()) {
 			Vec l = e.getValue().current();
 			int s = l.distanceIntSquared(vec);
-			if (s >= smallest) {
+			if (s <= smallest) {
 				smallest = s;
 				nearest = e.getKey();
 			}
@@ -92,7 +111,7 @@ public class Map {
 	 * @return Точка спавна.
 	 */
 	public Location getSpawnLocation(Color color, World w) {
-		return spawns.get(color).next().toLocation(w);
+		return spawns.getDefault(color).next().toLocation(w);
 	}
 
 	public Set<Color> getRegisteredColors() {
@@ -115,5 +134,17 @@ public class Map {
 
 	public static Map get(String schematicName) {
 		return LIST.get(schematicName);
+	}
+
+	public Colors<CyclicIterator<Vec>> getSpawns() {
+		return spawns;
+	}
+
+	public Vector getMax() {
+		return max;
+	}
+
+	public Vector getMin() {
+		return min;
 	}
 }

@@ -67,7 +67,7 @@ public class GamePreparation {
 		Colors<Collection<Person>> colors = new Colors<>();
 		for (Color color : map.getRegisteredColors()) colors.put(color, new FixedArrayList<>(playersPerTeam()));
 		CyclicIterator<Color> iterator = new CyclicIterator<>(map.getRegisteredColors());
-		for (Person p : players) colors.get(iterator.next()).add(p);
+		for (Person p : players) colors.getDefault(iterator.next()).add(p);
 		return colors;
 	}
 

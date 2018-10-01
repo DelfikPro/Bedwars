@@ -32,14 +32,13 @@ public abstract class EnumReference<Key extends Enum<Key>, Value> extends EnumMa
 	}
 	
 	/**
-	 * Немного изменённый EnumMap#get(...), который возврашает стандартное значение, если
+	 * Немного изменённый EnumMap#getDefault(...), который возврашает стандартное значение, если
 	 * заданый ключ не был найден.
 	 * @param key Ключ, по которому нужно найти значение.
 	 * @return Значение, если ключ найден, стандартное значение, если не найден, null, если стандартное неопределено.
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
-	public Value get(Object key) {
+	public Value getDefault(Object key) {
 		// Возвращение стандартным путём, если объект есть или нет стандартного значения.
 		Value value = super.get(key);
 		if (value != null || defaultValueSupplier == null) return value;
@@ -68,7 +67,8 @@ public abstract class EnumReference<Key extends Enum<Key>, Value> extends EnumMa
 	 * @param <New> Новый тип значений.
 	 */
 	public <New> void convert(EnumReference<? super Key, ? super New> destination, BiFunction<Key, Value, New> converter) {
-		for (Entry<Key, Value> e : entrySet()) destination.put(e.getKey(), converter.apply(e.getKey(), e.getValue()));
+		for (Entry<Key, Value> e : entrySet())
+			destination.put(e.getKey(), converter.apply(e.getKey(), e.getValue()));
 	}
 	
 	

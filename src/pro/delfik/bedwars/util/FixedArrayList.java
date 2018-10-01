@@ -178,7 +178,7 @@ public class FixedArrayList<T> implements List<T> {
 			private int position = 0;
 			@Override
 			public boolean hasNext() {
-				return position < array.length - 1;
+				return position < array.length;
 			}
 			@Override
 			public T next() {

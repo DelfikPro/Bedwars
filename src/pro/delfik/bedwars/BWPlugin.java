@@ -1,5 +1,7 @@
 package pro.delfik.bedwars;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import pro.delfik.bedwars.command.CommandBedWars;
@@ -14,21 +16,18 @@ import pro.delfik.lmao.util.Registrar;
  */
 public class BWPlugin extends JavaPlugin {
 	
-	// Инстанция плагина.
 	public static BWPlugin instance;
 	
-	// Массив с инстанциями команд
 	private final LmaoCommand[] COMMANDS =
 			{new CommandBedWars()};
-	
-	// Массив с инстанциями слушателей событий
+
 	private final Listener[] LISTENERS =
 			{new Purchase(), new GeneralListener(), new GameListener()};
 	
 	
 	@Override
 	public void onLoad() {
-		instance = this; // Инициализация инстанции
+		instance = this;
 	}
 	
 	@Override
@@ -36,7 +35,13 @@ public class BWPlugin extends JavaPlugin {
 		Registrar registrar = new Registrar(this);
 		for (LmaoCommand cmd : COMMANDS) registrar.regCommand(cmd);
 		for (Listener listener : LISTENERS) registrar.regEvent(listener);
-		
+
+		Bukkit.getPluginCommand("kill").setExecutor((s, c, l, a) -> {
+			((Player) s).setHealth(0);
+			s.sendMessage("§6Вы самоубились.");
+			return true;
+		});
+
 		ConfigReader.initMaps();
 	}
 }

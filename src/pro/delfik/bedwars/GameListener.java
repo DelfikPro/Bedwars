@@ -7,14 +7,19 @@ import org.bukkit.SandstoneType;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Sandstone;
 import pro.delfik.bedwars.game.BWTeam;
@@ -24,10 +29,12 @@ import pro.delfik.bedwars.game.stuff.GPSTracker;
 import pro.delfik.bedwars.game.stuff.HomeTeleportation;
 import pro.delfik.bedwars.game.stuff.RescuePlatform;
 import pro.delfik.bedwars.purchase.Purchase;
+import pro.delfik.lmao.outward.item.I;
 import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.util.Vec3i;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -101,6 +108,58 @@ public class GameListener implements Listener {
 		
 	}
 
+	private static final HashMap<Player, Location> deathLocation = new HashMap<>();
+
+	@EventHandler
+	public void onDeath(PlayerDeathEvent e) {
+		final Player p = e.getEntity();
+		final Game game = Game.get(p);
+		if (game == null) return;
+		final BWTeam team = game.getTeam(p.getName());
+		if (team == null) return;
+		if (!team.hasBed()) {
+			deathLocation.put(p, p.getLocation());
+			game.eliminate(p);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onQuit(PlayerQuitEvent e) {
+		Game g = Game.get(e.getPlayer());
+		if (g == null) return;
+		g.eliminate(e.getPlayer());
+	}
+
+	@EventHandler
+	public void onRespawn(PlayerRespawnEvent e) {
+		Player player = e.getPlayer();
+		Game g = Game.get(player);
+		if (g == null) return;
+		BWTeam team = g.getTeam(player.getName());
+		if (team == null) {
+			Location loc = deathLocation.remove(player);
+			if (loc == null) Bedwars.toLobby(player);
+			else {
+				e.setRespawnLocation(loc);
+				I.delay(() -> {
+					Person.get(e.getPlayer()).sendTitle("§cПоражение!");
+					e.getPlayer().setGameMode(GameMode.SPECTATOR);
+				}, 3);
+			}
+		} else {
+			e.setRespawnLocation(g.getSpawnLocation(team.getColor()));
+			I.delay(() -> Bedwars.toGame(e.getPlayer()), 2);
+		}
+	}
+
+
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent e) {
+		Game g = Game.get(e.getBlock().getWorld());
+		if (g == null) return;
+		g.addChunk(e.getBlock().getChunk());
+	}
+
 
 	@EventHandler
 	public void onItemSpawn(ItemSpawnEvent e) {
@@ -139,7 +198,6 @@ public class GameListener implements Listener {
 				if (sandstone.getType() != SandstoneType.SMOOTH) e.setCancelled(true);
 				break;
 			case BED_BLOCK:
-				// ToDo: Обработка поломки кровати
 				Color bed = game.getMap().nearestTeam(e.getBlock().getLocation());
 				if (bed == team.getColor()) {
 					e.setCancelled(true);
@@ -147,6 +205,7 @@ public class GameListener implements Listener {
 					return;
 				}
 				game.destroyBed(bed, p);
+				break;
 		}
 	}
 

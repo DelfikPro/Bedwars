@@ -12,7 +12,6 @@ import pro.delfik.lmao.util.Vec;
 import pro.delfik.lmao.util.Vec3i;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class BWTeam {
@@ -36,7 +35,7 @@ public class BWTeam {
 	private final List<Vec3i> chests = new ArrayList<>();
 	
 	// Эндер-сундук команды
-	private final Inventory enderChest = Bukkit.createInventory(null, 18, "§5Межпространственный чемодан");
+	private final Inventory enderChest = Bukkit.createInventory(null, 18, "§5§lГиперсундук");
 
 	private boolean hasBed = true;
 	
@@ -50,10 +49,10 @@ public class BWTeam {
 		handle.setPrefix(c.getPrefix());
 		this.players.forEach(person -> {
 			person.getHandle().setScoreboard(game.getScoreboard());
-			handle.addEntry(handle.getName());
+			handle.addEntry(person.getName());
+			handle.setDisplayName(c.getPrefix() + person.getName());
 			game.byName.put(person.getName(), this);
 		});
-		enableSpawners(game);
 	}
 	
 	public Color getColor() {
@@ -64,7 +63,7 @@ public class BWTeam {
 		return resourceSpawners;
 	}
 	
-	public Collection<Person> getPlayers() {
+	public List<Person> getPlayers() {
 		return players;
 	}
 	
@@ -76,8 +75,8 @@ public class BWTeam {
 		return handle;
 	}
 	
-	private void enableSpawners(Game game) {
-		Resources<List<Vec>> resources = game.getMap().getResourceSpawners().get(color);
+	public void enableSpawners(Game game) {
+		Resources<List<Vec>> resources = game.getMap().getResourceSpawners().getDefault(color);
 		World w = game.getWorld();
 		
 		resources.forEach((resource, vecs) -> {
@@ -86,8 +85,7 @@ public class BWTeam {
 	}
 	
 	public boolean defeated() {
-		return false;
-		// ToDo: BWTeam#defeated()
+		return players.isEmpty() && !hasBed;
 	}
 	
 	public List<Vec3i> getChests() {
@@ -105,4 +103,14 @@ public class BWTeam {
 	public boolean hasBed() {
 		return hasBed;
 	}
+
+	public void remove(Person p) {
+		players.remove(p);
+		p.getHandle().setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+	}
+
+	public void setHasBed(boolean b) {
+		hasBed = b;
+	}
+
 }
