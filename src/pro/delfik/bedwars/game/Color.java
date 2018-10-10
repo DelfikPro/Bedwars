@@ -1,5 +1,9 @@
 package pro.delfik.bedwars.game;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import pro.delfik.lmao.outward.item.I;
+
 public enum Color {
 	RED("§c", "Красные", 14, org.bukkit.Color.RED, "Красную"),
 	BLUE("§9", "Синие", 11, org.bukkit.Color.BLUE, "Синюю");
@@ -11,6 +15,7 @@ public enum Color {
 	private final String prefix, title, bed;
 	private final byte woolColor;
 	private final org.bukkit.Color armorColor;
+	private final ItemStack[] armor;
 	
 	Color(String prefix, String name, int woolColor, org.bukkit.Color armorColor, String bed) {
 		this.prefix = prefix;
@@ -18,6 +23,12 @@ public enum Color {
 		this.woolColor = (byte) woolColor;
 		this.armorColor = armorColor;
 		this.bed = bed;
+		armor = new ItemStack[] {
+				I.leatherArmor(Material.LEATHER_BOOTS		, armorColor, "§eСапоги-медленноходы", "Начальный предмет"),
+				I.leatherArmor(Material.LEATHER_LEGGINGS	, armorColor, "§eНеберёзовые нештаны", "Начальный предмет"),
+				I.leatherArmor(Material.LEATHER_CHESTPLATE	, armorColor, "§eХолодный свитер"	 , "Начальный предмет"),
+				I.leatherArmor(Material.LEATHER_HELMET		, armorColor, "§eШапка-видимка"		 , "Начальный предмет"),
+		};
 	}
 	
 	/**
@@ -65,5 +76,9 @@ public enum Color {
 
 	public String getBedBroken() {
 		return prefix + bed + " кровать";
+	}
+
+	public ItemStack[] getArmor() {
+		return armor;
 	}
 }
