@@ -1,24 +1,60 @@
 package pro.delfik.bedwars.preparation;
 
-import pro.delfik.lmao.outward.item.ItemBuilder;
-import pro.delfik.lmao.outward.gui.GUI;
-import pro.delfik.lmao.outward.gui.GeneralizedGUI;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import pro.delfik.bedwars.game.Map;
+import pro.delfik.lmao.outward.inventory.GUI;
+import pro.delfik.lmao.outward.inventory.SlotGUI;
+import pro.delfik.lmao.outward.item.ItemBuilder;
+import pro.delfik.lmao.user.Person;
 
-import java.util.function.BiConsumer;
+import static implario.util.Converter.plural;
 
 public class NewGame {
-	private static final BiConsumer<Player, Integer> CREATING = (player, slot) -> {
 
-	};
+	public static final GUI gui = new SlotGUI("Выбор игры", GamePreparation.HARDCODED_PREPARATION_LIMIT / 9, (p, slot, item) -> {
+		GamePreparation prep = GamePreparation.get(slot);
+		if (prep != null) {
+			prep.add(Person.get(p));
+			return;
+		}
+		if (slot >= GamePreparation.HARDCODED_PREPARATION_LIMIT || slot < 0) return;
+		p.openInventory(getFormatSelector(p, slot).inv());
+	});
+	public static final ItemStack EMPTY = ItemBuilder.create(Material.NETHER_STAR, "§7§lПустой сектор","§f>> §a§lСоздать игру §f<<");
 
-	private static final GUI NEW_GAME = new GeneralizedGUI(Bukkit.createInventory(null, 9, "Список игр"), CREATING, null);
+	static {
+		for (int i = 0; i < 36; i++) gui.inv().setItem(i, EMPTY);
+	}
 
-	public static void update(int slot, GamePreparation gamePreparation) {
-		NEW_GAME.getInventory().setItem(0, ItemBuilder.create(Material.EMERALD_BLOCK,
-				"§f§lИгра " + slot, "§aКоманд: §e" + gamePreparation.getSize(), "§f", "§f>> §a§lПрисоединиться §f<<"));
+	public static void create(Player p, GameFormat format, int gpid) {
+		p.closeInventory();
+		if (Map.getMaps(format.getTeams()).isEmpty()) {
+			p.sendMessage("§cКарт для данного формата не найдено.");
+			p.closeInventory();
+			return;
+		}
+		GamePreparation prep = new GamePreparation(format, gpid);
+		prep.add(Person.get(p));
+		prep.setOwner(p.getName());
+	}
+	public static GUI getFormatSelector(Player p, int gpid) {
+		SlotGUI gui = new SlotGUI("Выберите формат", 1, (p1, slot, item) -> create(p, GameFormat.values()[slot - 3], gpid), true);
+		int i = 3;
+		for (GameFormat f : GameFormat.values()) gui.inv().setItem(i++, f.getDisplay());
+		return gui;
+	}
+
+
+	public static void update(int slot, GamePreparation p) {
+		if (p == null) {
+			gui.inv().setItem(slot, EMPTY);
+			return;
+		}
+		int ps = p.getPlayers();
+		gui.inv().setItem(slot, ItemBuilder.create(p.getSize().getIcon(), "§f§lСектор " + slot + " §e[§f" + ps + " игрок" + plural(ps, "", "а", "ов") + "§e]",
+				"§f", "§fФормат: " + p.getSize().getTitle(), "§f>> §a§lПрисоединиться §f<<"));
 	}
 
 }
