@@ -23,7 +23,7 @@ import java.util.Set;
 
 public class Map {
 
-	private static final HashMap<Integer, List<Map>> FORMAT = new HashMap<>();
+	public static final HashMap<Integer, List<Map>> FORMAT = new HashMap<>();
 	private static final HashMap<String, Map> LIST = new HashMap<>();
 
 	private final String name, schematic;
