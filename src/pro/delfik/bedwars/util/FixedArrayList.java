@@ -191,4 +191,10 @@ public class FixedArrayList<T> implements List<T> {
 	public void add(int index, T element) {
 		if (get(index) != null) set(index, element);
 	}
+
+	public List<T> removeGaps() {
+		List<T> list = new ArrayList<>();
+		for (Object o : array) if (o != null) list.add((T) o);
+		return list;
+	}
 }
