@@ -23,11 +23,14 @@ public class GPSTracker {
 		}
 		if (target == null) {
 			p.getHandle().setCompassTarget(p.getLocation());
-			p.sendSubtitle("§7Врагов нет.");
+			p.getHandle().updateInventory();
 			p.sendTitle("§f");
+			p.sendSubtitle("§7Врагов нет.");
 		} else {
 			p.getHandle().setCompassTarget(target.getLocation());
-			p.sendSubtitle(target.getDisplayName() + "§e[§f" + ((int) lowestDistance) + " м§e]");
+			p.getHandle().updateInventory();
+			p.sendTitle("§f");
+			p.sendSubtitle(target.getDisplayName() + " §e[§f" + ((int) lowestDistance) + " м§e]");
 		}
 	}
 }
