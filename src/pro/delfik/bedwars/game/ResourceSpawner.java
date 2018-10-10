@@ -32,4 +32,9 @@ public class ResourceSpawner {
 	public void spawn() {
 		location.getWorld().dropItemNaturally(location, resource.getItem());
 	}
+
+	public static ResourceSpawner[] EMPTY = new ResourceSpawner[] {new ResourceSpawner(null, null) {
+		@Override
+		public void spawn() {}
+	}};
 }
