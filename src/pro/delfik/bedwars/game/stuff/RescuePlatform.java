@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import pro.delfik.bedwars.game.Items;
 import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.util.Cooldown;
 import pro.delfik.lmao.util.TimedMap;
@@ -27,6 +28,12 @@ public class RescuePlatform {
 		p.teleport(loc);
 		loc.subtract(2, 0, 2);
 		this.blocks = build(loc);
+		if (blocks.isEmpty()) {
+			p.getHandle().getInventory().addItem(Items.RESCUE_PLATFORM);
+			p.sendTitle("§f");
+			p.sendTitle("§cНет места для платформы");
+			return;
+		}
 		p.getHandle().setFallDistance(0);
 		new Cooldown("rp" + p.getName(), 10, Collections.singletonList(p), this::remove);
 	}
