@@ -5,6 +5,7 @@ import org.bukkit.World;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
+import pro.delfik.bedwars.util.CyclicIterator;
 import pro.delfik.bedwars.util.FixedArrayList;
 import pro.delfik.bedwars.util.Resources;
 import pro.delfik.lmao.user.Person;
@@ -29,7 +30,7 @@ public class BWTeam {
 	private final Color color;
 	
 	// Отсортированные спавнеры ресурсов
-	private Resources<List<ResourceSpawner>> resourceSpawners = new Resources<>(ArrayList::new);
+	private Resources<CyclicIterator<ResourceSpawner>> resourceSpawners = new Resources<>(a -> new CyclicIterator<>(ResourceSpawner.EMPTY));
 	
 	// Сундуки, принадлежащие команде
 	private final List<Vec3i> chests = new ArrayList<>();
@@ -59,12 +60,12 @@ public class BWTeam {
 		return color;
 	}
 	
-	public Resources<List<ResourceSpawner>> getResourceSpawners() {
+	public Resources<CyclicIterator<ResourceSpawner>> getResourceSpawners() {
 		return resourceSpawners;
 	}
 	
 	public List<Person> getPlayers() {
-		return players;
+		return players.removeGaps();
 	}
 	
 	public Score getSidebarScore() {
@@ -85,7 +86,7 @@ public class BWTeam {
 	}
 	
 	public boolean defeated() {
-		return players.isEmpty() && !hasBed;
+		return players.isEmpty();
 	}
 	
 	public List<Vec3i> getChests() {
@@ -93,7 +94,7 @@ public class BWTeam {
 	}
 	
 	private void addResourceSpawner(ResourceSpawner resourceSpawner) {
-		resourceSpawners.computeIfAbsent(resourceSpawner.getResource(), key -> new ArrayList<>()).add(resourceSpawner);
+		resourceSpawners.getDefault(resourceSpawner.getResource()).add(resourceSpawner);
 	}
 	
 	public Inventory getEnderChest() {
@@ -106,7 +107,6 @@ public class BWTeam {
 
 	public void remove(Person p) {
 		players.remove(p);
-		p.getHandle().setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 	}
 
 	public void setHasBed(boolean b) {
