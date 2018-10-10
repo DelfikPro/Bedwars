@@ -14,15 +14,14 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import pro.delfik.bedwars.BWPlugin;
 import pro.delfik.bedwars.Bedwars;
+import pro.delfik.bedwars.preparation.GameSelector;
 import pro.delfik.bedwars.util.Colors;
 import pro.delfik.bedwars.util.CyclicIterator;
 import pro.delfik.bedwars.util.FixedArrayList;
 import pro.delfik.bedwars.util.Resources;
-import pro.delfik.bedwars.world.Schematics;
 import pro.delfik.bedwars.world.WorldUtils;
 import pro.delfik.lmao.outward.item.I;
 import pro.delfik.lmao.user.Person;
-import pro.delfik.lmao.util.Cooldown;
 import pro.delfik.lmao.util.U;
 
 import java.io.File;
@@ -33,11 +32,16 @@ import java.util.function.Consumer;
 public class Game {
 	
 	// Ограничение на максимальное количество одновременных игр
-	public static final int MAX_RUNNING_GAMES = 5;
-	
+	public static final int MAX_RUNNING_GAMES = 10;
+
+	// Длительность игры в секундах
+	private static final float GAME_DURATION = 600;
+
 	// Текущие игры
 	private static final FixedArrayList<Game> RUNNING = new FixedArrayList<>(MAX_RUNNING_GAMES);
 	private List<Chunk> chunks = new LinkedList<>();
+	private BukkitTask timerTask;
+
 
 	public static Game get(World world) {
 		String name = world.getName();
@@ -45,7 +49,10 @@ public class Game {
 		int i = Converter.toInt(name.substring(3), -1);
 		return i == -1 ? null : i < MAX_RUNNING_GAMES ? RUNNING.get(i) : null;
 	}
-	
+
+	// Время начала игры
+	private long started = -1;
+
 	// ID мира, в котором идёт игра
 	private final int id;
 	
@@ -111,8 +118,9 @@ public class Game {
 	}
 
 	public void startCooldown() {
-		setState(State.COOLDOWN);
-		new Cooldown("BW_" + id, 4, getPlayers(), this::start);
+		setState(State.GENERATING);
+		I.delay(this::start, 100);
+		for (Person p : getPlayers()) p.sendMessage("§6Идёт генерация карты. Игра начнётся через 5 секунд.");
 	}
 	
 	public State getState() {
@@ -121,6 +129,7 @@ public class Game {
 	
 	private void setState(State state) {
 		this.state = state;
+		GameSelector.update(this);
 	}
 	
 	public List<Person> getPlayers() {
@@ -142,6 +151,7 @@ public class Game {
 	 * @return Готовый к вставке карты мир
 	 */
 	private World loadWorld() {
+		for (BWTeam t : teams.values()) for (Person p : t.getPlayers()) p.sendTitle("Генерация карты...");
 		String worldName = "BW_" + id;
 		World world = WorldUtils.loadWorld(worldName);
 		WorldUtils.clear(world);
@@ -153,19 +163,14 @@ public class Game {
 	 */
 	private void buildMap() {
 		setState(State.GENERATING);
-//		new Thread(() -> {
-//			Schematics schematics = new Schematics(world);
-//			schematics.loadSchematic(map.getName(), map.getCenter().toVec3i());
-			try {
-				Location loc = map.getCenter().toLocation(world);
-				FaweAPI.load(new File("plugins/WorldEdit/schematics/" + map.getSchematic() + ".schematic"))
-						.paste(BukkitUtil.getLocalWorld(world), new Vector(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), false);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			// После успешной вставки схематики можно начинать игру.
-			this.startCooldown();
-//		}).start();
+		this.startCooldown();
+		try {
+			Location loc = map.getCenter().toLocation(world);
+			FaweAPI.load(new File("plugins/WorldEdit/schematics/" + map.getSchematic() + ".schematic"))
+					.paste(BukkitUtil.getLocalWorld(world), new Vector(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), false);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
@@ -175,14 +180,31 @@ public class Game {
 	public void start() {
 		for (BWTeam team : teams.values()) {
 			for (Person p : team.getPlayers()) {
+				Bedwars.toGame(p.getHandle(), team.getColor());
 				p.teleport(map.getSpawnLocation(team.getColor(), world));
-				Bedwars.toGame(p.getHandle());
 				p.sendTitle("§aИгра началась!");
 			}
 		}
+		setState(State.GAME);
 		enableSpawners();
+		enableTimer();
 	}
-	
+
+	private void enableTimer() {
+		started = System.currentTimeMillis();
+		timerTask = I.timer(() -> {
+			long time = (System.currentTimeMillis() - started) / 1000;
+			float percentage = 1f - (time / GAME_DURATION);
+			if (percentage <= 0) {
+				timerTask.cancel();
+				draw();
+				return;
+			}
+			forPlayers(p -> p.getHandle().setExp(percentage));
+		}, 100);
+	}
+
+
 	/**
 	 * Начать раздавать ресурсы из спавнеров.
 	 */
@@ -190,7 +212,7 @@ public class Game {
 		for (BWTeam team : teams.values()) team.enableSpawners(this);
 		for (Resource resource : Resource.values()) {
 			BukkitTask task = I.timer(() -> {
-				for (BWTeam t : teams.values()) if (!t.defeated()) t.getResourceSpawners().getDefault(resource).forEach(ResourceSpawner::spawn);
+				for (BWTeam t : teams.values()) if (!t.defeated()) t.getResourceSpawners().getDefault(resource).next().spawn();
 			}, resource.getSpawnTicks());
 			resourceTasks.put(resource, task);
 		}
@@ -206,30 +228,47 @@ public class Game {
 		end(winner);
 	}
 
-	private static final Iterator<String> ranks = new CyclicIterator<>(new String[] {
-			"Непревзойдённый", "Чудесный", "Великолепный", "Непобедимый", "Грациозный", "Ангельский",
-			"Бесподобный", "Прекрасный", "Лучший", "Волшебный", "Удивительный", "Божественный", "Пламенный"
-	});
+	private static final CyclicIterator<String> ranks = new CyclicIterator<>(new String[] {
+			"Потрясающий", "Обалденный", "Роскошный", "Королевский", "Шикарный", "Идеальный", "Крутой", "Сказочный",
+			"Непревзойдённый", "Чудесный", "Великолепный", "Непобедимый", "Грациозный", "Ангельский", "Чёткий", "Превосходный",
+			"Бесподобный", "Прекрасный", "Лучший", "Волшебный", "Удивительный", "Божественный", "Пламенный", "Стратег", "Профи",
+			"Мастер", "§dЛюбитель чая", "Замечательный", "Годный", "Классный", "Безупречный", "Прелестный", "Достойный", "Героический",
+			"Козырный", "Умопомрачительный", "Клёвый", "Коронный", "Восхитительный", "Царский", "Блестящий", "Отменный", "Неотразимый",
+			"Райский", "Кайфовый", "Игрок мечты", "Избранный", "Упорный", "Целеустремлённый", "Золотой", "Шикарный", "Балдёжный"
+	}).random();
 
 	public void end(BWTeam winner) {
 		if (state == State.ENDING || state == State.RESETTING) return;
 		setState(State.ENDING);
 		String colorDesc = winner.getColor().toString();
-		List<TextComponent> list = Converter.transform(winner.getPlayers(), p -> U.constructComponent("# §e" + ranks.next() + " ", p));
-		resourceTasks.forEach(BukkitTask::cancel);
+		List<TextComponent> list = Converter.transform(winner.getPlayers(), p -> U.constructComponent("§7# §e" + ranks.next() + " ", p));
 		forPlayers(p -> {
 			p.sendTitle("Победили " + colorDesc + "§f!");
-			p.sendMessage("##############################");
-			p.sendMessage("# " + colorDesc + "§f победили!");
-			p.sendMessage("# §aСписок победителей:");
-			p.sendMessage("##############################");
+			p.sendMessage("§7##############################");
+			p.sendMessage("§7# " + colorDesc + "§f победили!");
+			p.sendMessage("§7# §fСписок чемпионов:");
+			p.sendMessage("§7##############################");
 			for (TextComponent t : list) p.msg(t);
-			p.sendMessage("##############################");
+			p.sendMessage("§7##############################");
+		});
+		endCooldown();
+	}
+
+	public void draw() {
+		if (state == State.ENDING || state == State.RESETTING) return;
+		setState(State.ENDING);
+		forPlayers(p -> {
+			p.sendTitle("§fНичья!");
+			p.sendMessage("§7##############################");
+			p.sendMessage("§7# §f§lНичья!");
+			p.sendMessage("§7##############################");
 		});
 		endCooldown();
 	}
 
 	public void endCooldown() {
+		resourceTasks.forEach(BukkitTask::cancel);
+		timerTask.cancel();
 		forPlayers(p -> p.sendMessage("§6Игра закончится через 10 секунд."));
 		I.delay(() -> {
 			for (Player p : world.getPlayers()) Bedwars.toLobby(p);
@@ -240,10 +279,28 @@ public class Game {
 
 	private volatile int clearTask = -1;
 
+	private void clearSync() {
+		Bukkit.broadcastMessage("§cИгровой сектор §e§l" + id + " §c§nсинхронно§c очищается.");
+		Bukkit.broadcastMessage("§cСкорее всего, экстренная очистка была вызвана рестартом.");
+		world.getEntities().forEach(Entity::remove);
+		chunks.addAll(WorldUtils.getAllChunksBetween(world, map.getMin(), map.getMax()));
+		Chunk ch = world.getSpawnLocation().getChunk();
+		world.regenerateChunk(ch.getX(), ch.getZ());
+		for (Chunk c : chunks) {
+			world.regenerateChunk(c.getX(), c.getZ());
+			world.unloadChunk(c);
+		}
+		RUNNING.set(id, null);
+	}
+
+	@Override
+	public String toString() {
+		return "bwGAME[id=" + id + ",state=" + state + "]";
+	}
+
 	public void clear() {
 		world.getEntities().forEach(Entity::remove);
-		chunks.addAll(Schematics.getAllChunksBetween(world, map.getMin(), map.getMax()));
-		Bukkit.broadcastMessage("§c§oРазмер массива: §f§o" + chunks.size());
+		chunks.addAll(WorldUtils.getAllChunksBetween(world, map.getMin(), map.getMax()));
 		Iterator<Chunk> iterator = chunks.iterator();
 		Chunk ch = world.getSpawnLocation().getChunk();
 		world.regenerateChunk(ch.getX(), ch.getZ());
@@ -255,6 +312,7 @@ public class Game {
 					world.unloadChunk(c);
 				} else if (clearTask != -1) {
 					RUNNING.set(id, null);
+					setState(State.NOTHING);
 					I.s().cancelTask(clearTask);
 					return;
 				}
@@ -282,35 +340,35 @@ public class Game {
 		}
 		forPlayers(player -> U.msg(player.getHandle(), p, " разрушил " + color.getBedBroken()));
 	}
-	
+
 	public Map getMap() {
 		return map;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
-	
+
 	public Colors<BWTeam> getTeams() {
 		return teams;
 	}
-	
+
 	protected Objective getObjective() {
 		return objective;
 	}
-	
+
 	protected Scoreboard getScoreboard() {
 		return scoreboard;
 	}
-	
+
 	public World getWorld() {
 		return world;
 	}
-	
+
 	public BWTeam getTeam(String playername) {
 		return byName.get(playername);
 	}
-	
+
 	public Location getSpawnLocation(Color color) {
 		return map.getSpawnLocation(color, world);
 	}
@@ -327,6 +385,7 @@ public class Game {
 	public void eliminate(Player p) {
 		BWTeam t = getTeam(p.getName());
 		if (t == null) return;
+		byName.remove(p.getName());
 		t.remove(Person.get(p));
 		checkWinner();
 	}
@@ -334,6 +393,16 @@ public class Game {
 	public void addChunk(Chunk chunk) {
 		if (!chunks.contains(chunk)) chunks.add(chunk);
 	}
+
+	public void stop() {
+		forPlayers(p -> {
+			p.sendTitle("§c§lRESTART");
+			p.sendSubtitle("§cСервер перезагружается.");
+		});
+		for (Player p : world.getPlayers()) Bedwars.toLobby(p);
+		clearSync();
+	}
+
 
 	/**
 	 * Состояние игры.
@@ -345,9 +414,8 @@ public class Game {
 	 * RESETTING: Очищение мира после игры.
 	 */
 	public enum State {
-		NOTHING("§aОжидание игроков", Material.EMERALD_BLOCK),
+		NOTHING("§7Сектор пуст", Material.IRON_BLOCK),
 		GENERATING("§bГенерация карты", Material.DIAMOND_BLOCK),
-		COOLDOWN("§bНачало игры", Material.DIAMOND_BLOCK),
 		GAME("§6Идёт игра", Material.GOLD_BLOCK),
 		ENDING("§cКонец игры", Material.REDSTONE_BLOCK),
 		RESETTING("§6Сброс карты", Material.COMMAND);
