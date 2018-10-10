@@ -1,9 +1,6 @@
 package pro.delfik.bedwars;
 
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.SandstoneType;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,6 +25,7 @@ import pro.delfik.bedwars.game.Game;
 import pro.delfik.bedwars.game.stuff.GPSTracker;
 import pro.delfik.bedwars.game.stuff.HomeTeleportation;
 import pro.delfik.bedwars.game.stuff.RescuePlatform;
+import pro.delfik.bedwars.preparation.GamePreparation;
 import pro.delfik.bedwars.purchase.Purchase;
 import pro.delfik.lmao.outward.item.I;
 import pro.delfik.lmao.user.Person;
@@ -65,7 +63,7 @@ public class GameListener implements Listener {
 			
 			switch (e.getClickedBlock().getType()) {
 				case ENDER_PORTAL_FRAME:
-					p.openInventory(Purchase.getInventory());
+					Purchase.open(p);
 					e.setCancelled(true);
 					return;
 				case CHEST:
@@ -75,6 +73,7 @@ public class GameListener implements Listener {
 					}
 					break;
 				case ENDER_CHEST:
+					e.setCancelled(true);
 					if (!p.isSneaking()) p.openInventory(team.getEnderChest());
 					break;
 				case BED_BLOCK:
@@ -97,10 +96,15 @@ public class GameListener implements Listener {
 					}
 					break;
 				case COMPASS:
+					Bukkit.broadcastMessage("§aКомпас обновлён для игрока §e" + p.getName());
 					GPSTracker.updateFor(game, team, Person.get(p));
 					break;
 				case SULPHUR:
-					HomeTeleportation tp = new HomeTeleportation(Person.get(p), team, game);
+					if (HomeTeleportation.get(p) != null) p.sendMessage("§cВы уже телепортируетесь на базу.");
+					else {
+						new HomeTeleportation(Person.get(p), team, game);
+						decrementHandItem(p);
+					}
 					break;
 			}
 		}
@@ -125,9 +129,10 @@ public class GameListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onQuit(PlayerQuitEvent e) {
+		GamePreparation pr = GamePreparation.byPlayer.get(e.getPlayer().getName());
+		if (pr != null) pr.remove(Person.get(e.getPlayer()));
 		Game g = Game.get(e.getPlayer());
-		if (g == null) return;
-		g.eliminate(e.getPlayer());
+		if (g != null) g.eliminate(e.getPlayer());
 	}
 
 	@EventHandler
@@ -148,7 +153,7 @@ public class GameListener implements Listener {
 			}
 		} else {
 			e.setRespawnLocation(g.getSpawnLocation(team.getColor()));
-			I.delay(() -> Bedwars.toGame(e.getPlayer()), 2);
+			I.delay(() -> Bedwars.toGame(e.getPlayer(), team.getColor()), 2);
 		}
 	}
 
@@ -231,7 +236,7 @@ public class GameListener implements Listener {
 				from.getBlockZ() == to.getBlockZ();
 	}
 
-	private static void decrementHandItem(Player p) {
+	public static void decrementHandItem(Player p) {
 		ItemStack hand = p.getInventory().getItemInHand();
 		hand.setAmount(hand.getAmount() - 1);
 		p.getInventory().setItemInHand(hand);
