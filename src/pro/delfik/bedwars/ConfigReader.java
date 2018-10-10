@@ -51,18 +51,18 @@ public class ConfigReader {
 		String name = 			yml.getString("name");
 		String schematic = 		yml.getString("schematic");
 		Vec center = 			Vec.toVec(yml.getString("schematicPosition"));
-		int teamsAmount = 		yml.getInt("teamsAmount");
 		int spectatorY = 		yml.getInt("spectatorY");
 		List<Vec> middleGold = 	toVecList(yml.getStringList("middleGold"));
-		
+
 		// Парсинг команд
 		Colors<List<Vec>> respawns = new Colors<>(),
 								  bronze = new Colors<>(),
 								  iron = new Colors<>(),
 								  gold = new Colors<>();
-		
+
 		Colors<Resources<List<Vec>>> resources = new Colors<>();
 		ConfigurationSection teams = yml.getConfigurationSection("teams");
+		int teamsAmount = teams.getKeys(false).size();
 		for (String colorName : teams.getKeys(false)) {
 			Color color = Color.get(colorName);
 			if (color == null) {
@@ -72,7 +72,7 @@ public class ConfigReader {
 			}
 			ConfigurationSection sec = teams.getConfigurationSection(colorName);
 			respawns.put(color, toVecList(sec.getStringList("respawns")));
-			Resources<List<Vec>> res = new Resources<>(ArrayList::new);
+			Resources<List<Vec>> res = new Resources<>(a -> new ArrayList<>());
 			
 			ConfigurationSection rSec = sec.getConfigurationSection("resources");
 			for (String resourceName : rSec.getKeys(false)) {
