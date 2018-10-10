@@ -4,7 +4,6 @@ import java.util.EnumMap;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Подобие EnumMap, но с некоторыми дополнительными методами.
@@ -16,7 +15,7 @@ import java.util.function.Supplier;
 public abstract class EnumReference<Key extends Enum<Key>, Value> extends EnumMap<Key, Value> {
 	
 	// Генератор стандартного значения, обычно Value::new.
-	private final Supplier<Value> defaultValueSupplier;
+	private final Function<Key, Value> defaultValueSupplier;
 	
 	protected EnumReference(Class<Key> clazz) {
 		this(clazz, null);
@@ -26,7 +25,7 @@ public abstract class EnumReference<Key extends Enum<Key>, Value> extends EnumMa
 	 * @param clazz Класс<Key> для создания массива и проверки инстанций.
 	 * @param defaultValueSupplier Генератор стандартного значения вида Value::new.
 	 */
-	protected EnumReference(Class<Key> clazz, Supplier<Value> defaultValueSupplier) {
+	protected EnumReference(Class<Key> clazz, Function<Key, Value> defaultValueSupplier) {
 		super(clazz);
 		this.defaultValueSupplier = defaultValueSupplier;
 	}
@@ -43,7 +42,7 @@ public abstract class EnumReference<Key extends Enum<Key>, Value> extends EnumMa
 		Value value = super.get(key);
 		if (value != null || defaultValueSupplier == null) return value;
 		// Добавление в мап стандартного значения (Для последующих обращений) и его возвращение.
-		return computeIfAbsent((Key) key, k -> defaultValueSupplier.get());
+		return computeIfAbsent((Key) key, defaultValueSupplier);
 	}
 	
 	/**

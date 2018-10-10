@@ -3,7 +3,6 @@ package pro.delfik.bedwars.util;
 import pro.delfik.bedwars.game.Resource;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * EnumReference по Color.
@@ -17,7 +16,7 @@ public class Resources<Value> extends EnumReference<Resource, Value> {
 		this(null);
 	}
 	
-	public Resources(Supplier<Value> defaultValue) {
+	public Resources(Function<Resource, Value> defaultValue) {
 		super(Resource.class, defaultValue);
 	}
 	

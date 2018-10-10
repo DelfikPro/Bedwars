@@ -4,7 +4,6 @@ import pro.delfik.bedwars.game.Color;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * EnumReference по Color.
@@ -16,7 +15,7 @@ public class Colors<Value> extends EnumReference<Color, Value> {
 	public Colors() {
 		super(Color.class);
 	}
-	public Colors(Supplier<Value> defaultValue) {
+	public Colors(Function<Color, Value> defaultValue) {
 		super(Color.class, defaultValue);
 	}
 	
