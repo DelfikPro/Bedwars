@@ -1,16 +1,17 @@
 package pro.delfik.bedwars.game.stuff;
 
-import pro.delfik.bedwars.game.Items;
 import org.bukkit.entity.Player;
 import pro.delfik.bedwars.Bedwars;
 import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Game;
+import pro.delfik.bedwars.game.Items;
 import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.util.Cooldown;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static implario.util.Converter.asList;
 
 public class HomeTeleportation {
 	private static final Map<String, HomeTeleportation> teleportating = new HashMap<>();
@@ -24,7 +25,7 @@ public class HomeTeleportation {
 		this.p = p;
 		this.team = team;
 		this.game = game;
-		cd = new Cooldown("tp" + p.getName(), 6, Collections.singletonList(p), this::perform);
+		cd = new Cooldown("tp" + p.getName(), 6, asList(p), this::perform);
 		teleportating.put(p.getName(), this);
 	}
 	
@@ -38,9 +39,10 @@ public class HomeTeleportation {
 	
 	public void perform() {
 		if (game.getState() != Game.State.GAME) return;
-		p.sendSubtitle("§aты дома"); // ToDo: Придумать адекватное сообщение при телепортации домой.
+		p.sendSubtitle("§aДобро пожаловать домой.");
 		p.sendTitle("§f");
 		p.teleport(game.getSpawnLocation(team.getColor()));
+		teleportating.remove(p.getName());
 	}
 
 
