@@ -8,3 +8,5 @@ commands:
     aliases: [bw]
   kill:
     aliases: [dupe, hack, fly, harakiri]
+  setup:
+    aliases: [setupslots]
