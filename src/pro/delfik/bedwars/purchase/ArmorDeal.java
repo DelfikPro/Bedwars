@@ -19,6 +19,12 @@ public class ArmorDeal extends Deal {
 		armor[2] = leggings;
 		armor[3] = boots;
 		display = new ItemBuilder(chestplate == null ? leggings : chestplate).addLore("§dЦена: " + resource.represent(cost)).build();
+		byHash.put(hashCode(), this);
+	}
+
+	@Override
+	public int hashCode() {
+		return getItemHash(display);
 	}
 
 	@Override
@@ -36,7 +42,7 @@ public class ArmorDeal extends Deal {
 				ItemStack a = armor[j];
 				if (a == null) continue;
 				ItemStack c = current[i];
-				if (c != null && c.getType() != Material.AIR) Purchase.give(p, c);
+				if (c != null && c.getType() != Material.AIR && !c.getType().name().startsWith("LEATHER_")) Purchase.give(p, c);
 				current[i] = a;
 			}
 			p.getInventory().setArmorContents(current);
