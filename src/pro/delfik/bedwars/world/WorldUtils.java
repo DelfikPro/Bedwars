@@ -1,10 +1,16 @@
 package pro.delfik.bedwars.world;
 
+import com.sk89q.worldedit.Vector;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import pro.delfik.bedwars.Bedwars;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.lang.Integer.max;
+import static java.lang.Integer.min;
 
 /**
  * Полезные методы при работе с мирами.
@@ -59,5 +65,16 @@ public class WorldUtils {
 		return w;
 		
 	}
-	
+
+	public static List<Chunk> getAllChunksBetween(World w, Vector a, Vector b) {
+		Location aa = new Location(w, a.getX(), a.getY(), a.getZ());
+		Location bb = new Location(w, b.getX(), b.getY(), b.getZ());
+		Chunk A = aa.getChunk(), B = bb.getChunk();
+		int ax = A.getX(), bx = B.getX(), az = A.getZ(), bz = B.getZ();
+		List<Chunk> result = new ArrayList<>();
+		for (int x = min(ax, bx); x < max(ax, bx); x++)
+			for (int z = min(-az, bz); x < max(az, bz); x++)
+				result.add(w.getChunkAt(x, z));
+		return result;
+	}
 }
