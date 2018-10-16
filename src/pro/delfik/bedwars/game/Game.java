@@ -23,6 +23,7 @@ import pro.delfik.bedwars.world.WorldUtils;
 import pro.delfik.lmao.outward.item.I;
 import pro.delfik.lmao.user.Person;
 import pro.delfik.lmao.util.U;
+import pro.delfik.lmao.util.Vec;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import java.util.function.Consumer;
 public class Game {
 	
 	// Ограничение на максимальное количество одновременных игр
-	public static final int MAX_RUNNING_GAMES = 10;
+	public static final int MAX_RUNNING_GAMES = 18;
 
 	// Длительность игры в секундах
 	private static final float GAME_DURATION = 600;
@@ -55,34 +56,37 @@ public class Game {
 
 	// ID мира, в котором идёт игра
 	private final int id;
-	
+
 	// Карта, на которой идёт игра
 	private final Map map;
-	
+
 	// Референс по командам, участвующим в игре
 	private final Colors<BWTeam> teams;
-	
+
 	// Скорбоард для хранения команд и информации в сайдбаре
 	private final Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-	
+
 	// Задача в скорборде (Отображение информации в сайдбаре)
 	private final Objective objective = scoreboard.registerNewObjective("bedwars", "dummy");
-	
+
 	// Мир, в котором идёт игра
 	private final World world;
-	
+
 	// Состояние игры
 	private volatile State state = State.NOTHING;
-	
+
 	// Референс на таски, которые нужно отменить, чтобы прекратить спавн ресурсов
 	private final Resources<BukkitTask> resourceTasks = new Resources<>();
-	
+
+	// Таск со спавном голды на миду
+	private BukkitTask goldTask;
+
+	// Спавнеры голды на миду
+	private ArrayList<ResourceSpawner> goldSpawners = new ArrayList<>();
+
 	// Мап для получения команды по нику игрока
 	protected final HashMap<String, BWTeam> byName = new HashMap<>();
 
-	// Таски спавна ресурсов
-
-	
 	/**
 	 * Создание новой игры и генерация карты
 	 *
@@ -209,6 +213,7 @@ public class Game {
 	 * Начать раздавать ресурсы из спавнеров.
 	 */
 	private void enableSpawners() {
+		for (Vec vec : map.getGoldSpawners()) goldSpawners.add(new ResourceSpawner(Resource.GOLD, vec.toLocation(world)));
 		for (BWTeam team : teams.values()) team.enableSpawners(this);
 		for (Resource resource : Resource.values()) {
 			BukkitTask task = I.timer(() -> {
@@ -216,6 +221,9 @@ public class Game {
 			}, resource.getSpawnTicks());
 			resourceTasks.put(resource, task);
 		}
+		goldTask = I.timer(() -> {
+			for (ResourceSpawner spawner : goldSpawners) spawner.spawn();
+		}, map.getDelay().get(Resource.GOLD));
 	}
 
 	public void checkWinner() {

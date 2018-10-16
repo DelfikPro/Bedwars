@@ -47,20 +47,22 @@ public class ConfigReader {
 	 */
 	public static Map readMap(File file) {
 		
-		YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
-		String name = 			yml.getString("name");
-		String schematic = 		yml.getString("schematic");
-		Vec center = 			Vec.toVec(yml.getString("schematicPosition"));
-		int spectatorY = 		yml.getInt("spectatorY");
-		List<Vec> middleGold = 	toVecList(yml.getStringList("middleGold"));
+		YamlConfiguration yml	 = YamlConfiguration.loadConfiguration(file);
+		String name				 = yml.getString("name");
+		String schematic		 = yml.getString("schematic");
+		Vec center				 = Vec.toVec(yml.getString("schematicPosition"));
+		List<Vec> middleGold	 = toVecList(yml.getStringList("middleGold"));
+		int goldticks			 = yml.getInt("gold-delay");
+		int ironticks			 = yml.getInt("iron-delay");
+		int bronzeticks			 = yml.getInt("bronze-delay");
 
 		// Парсинг команд
 		Colors<List<Vec>> respawns = new Colors<>(),
-								  bronze = new Colors<>(),
-								  iron = new Colors<>(),
-								  gold = new Colors<>();
-
+							bronze = new Colors<>(),
+							  iron = new Colors<>(),
+							  gold = new Colors<>();
 		Colors<Resources<List<Vec>>> resources = new Colors<>();
+
 		ConfigurationSection teams = yml.getConfigurationSection("teams");
 		int teamsAmount = teams.getKeys(false).size();
 		for (String colorName : teams.getKeys(false)) {
@@ -82,6 +84,12 @@ public class ConfigReader {
 			}
 			resources.put(color, res);
 		}
-		return new Map(name, schematic, teamsAmount, center, respawns, resources);
+
+		Resources<Integer> i = new Resources<>();
+		i.put(Resource.GOLD, goldticks < 1 ? 200 : goldticks);
+		i.put(Resource.IRON, ironticks < 1 ? 100 : ironticks);
+		i.put(Resource.BRONZE, bronzeticks < 1 ? 15 : bronzeticks);
+
+		return new Map(name, schematic, teamsAmount, center, respawns, resources, middleGold, i);
 	}
 }

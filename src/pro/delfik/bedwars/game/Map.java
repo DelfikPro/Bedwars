@@ -33,6 +33,8 @@ public class Map {
 	private final Colors<Resources<List<Vec>>> resourceSpawners;
 	private final Material material;
 	private final Vector min, max;
+	private final List<Vec> gold;
+	private final Resources<Integer> delay;
 
 	/**
 	 * Создаёт инстанцию карты, которая потом используется всё время.
@@ -44,7 +46,7 @@ public class Map {
 	 * @param resources Референс с точками спавнеров ресурсов для каждой команды.
 	 */
 	public Map(String name, String schematic, int teams, Vec center, Colors<List<Vec>> spawns,
-				Colors<Resources<List<Vec>>> resources) {
+				Colors<Resources<List<Vec>>> resources, List<Vec> gold, Resources<Integer> delay) {
 		this.name = name;
 		this.schematic = schematic;
 		this.teams = teams;
@@ -52,6 +54,8 @@ public class Map {
 		this.spawns = spawns.convert(CyclicIterator::new);
 		this.resourceSpawners = resources;
 		this.material = Converter.randomEnum(Material.class);
+		this.gold = gold;
+		this.delay = delay;
 		File file = new File("plugins/WorldEdit/schematics/" + schematic + ".schematic");
 		try {
 			Schematic sch = ClipboardFormat.findByFile(file).load(file);
@@ -146,5 +150,13 @@ public class Map {
 
 	public Vector getMin() {
 		return min;
+	}
+
+	public List<Vec> getGoldSpawners() {
+		return gold;
+	}
+
+	public Resources<Integer> getDelay() {
+		return delay;
 	}
 }
