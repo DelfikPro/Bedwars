@@ -16,6 +16,7 @@ import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Color;
 import pro.delfik.bedwars.game.Game;
 import pro.delfik.bedwars.game.Resource;
+import pro.delfik.bedwars.preparation.PublicGame;
 import pro.delfik.bedwars.purchase.Purchase;
 import pro.delfik.bedwars.util.Colors;
 import pro.delfik.bedwars.util.CyclicIterator;
@@ -53,9 +54,17 @@ public class CommandBedWars extends LmaoCommand {
 		functions.put("maps", CommandBedWars::maps);
 		functions.put("win", CommandBedWars::win);
 		functions.put("gc", CommandBedWars::gc);
+		functions.put("preps", CommandBedWars::preps);
+	}
+
+	private static String preps(CommandSender commandSender, String[] strings) {
+		for (PublicGame p : PublicGame.getAll())
+			commandSender.sendMessage("§aPrep" + p.getSlot() + ": §e" + p.getSize() + "§a teams, §e" + p.getPlayers() + "§a players");
+		return "§a§lВсего: §e" + PublicGame.getAll().size();
 	}
 
 	private static String gc(CommandSender commandSender, String[] strings) {
+		requireRank(commandSender, Rank.DEV);
 		Bukkit.broadcastMessage("§3§lПАМЯТЬ СЕРВЕРА ОЧИЩАЕТСЯ. БУДЬТЕ ТЕРПЕЛИВЫ.");
 		long before = Runtime.getRuntime().freeMemory();
 		long start = System.currentTimeMillis();
@@ -165,6 +174,7 @@ public class CommandBedWars extends LmaoCommand {
 	}
 
 	private static String purchase(CommandSender sender, String[] args) {
+		requireRank(sender, Rank.KURATOR);
 		Player p = ((Player) sender);
 		Purchase.open(p);
 		return "§aGUI закупа открыт.";
