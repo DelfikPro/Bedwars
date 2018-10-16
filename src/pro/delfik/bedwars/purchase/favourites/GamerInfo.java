@@ -1,5 +1,6 @@
 package pro.delfik.bedwars.purchase.favourites;
 
+import implario.io.FileIO;
 import implario.util.ByteUnzip;
 import implario.util.ByteZip;
 import implario.util.Byteable;
@@ -33,6 +34,12 @@ public class GamerInfo implements Byteable {
 		for (int i = 0; i < 9; i++) fDeals[i] = Deal.byHash.get(favouriteDeals[i]);
 		for (int i = 0; i < slots.length; i++) defaultSlots.put(Type.values()[i], (int) slots[i]);
 		ALL.put(p, this);
+	}
+
+	public static void saveAndRemove(Player player) {
+		GamerInfo i = remove(player);
+		if (i == null) return;
+		FileIO.writeBytes("playerSettings/" + player.getName().toLowerCase() + ".txt", i.toByteZip().build());
 	}
 
 	@Override
