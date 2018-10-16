@@ -34,7 +34,7 @@ public class Purchase implements Listener {
 
 	private static final List<Section> sections = BWHShop.setup();
 
-	public static final ItemStack EMPTY = ItemBuilder.create(Material.WOOL, "§f>> §e§lИзбранное§f <<", "§aНажмите, чтобы установить", "§aВ этот слот предмет", "§aБыстрого доступа.");
+	public static final ItemStack EMPTY = ItemBuilder.create(Material.WOOL, "§f>> §e§lИзбранное§f <<", "§aНажмите, чтобы установить", "§aПредмет в этот слот", "§aБыстрого доступа.");
 	static {
 		for (int i = 18; i < 27; i++) gui.inv().setItem(i, EMPTY);
 		Favorites.fillSelectionGUI();
@@ -82,7 +82,7 @@ public class Purchase implements Listener {
 
 	public static void open(Player p) {
 		GamerInfo info = GamerInfo.ALL.get(p);
-		Inventory inv = GUI.create(27, "§0§5§lМагазин будущего");
+		Inventory inv = GUI.create(27, "§0§5§lМагазин");
 		for (Section s : sections)
 			if (s.getIcon().getItemMeta().getDisplayName().contains("Обмен")) inv.setItem(13, s.getIcon());
 			else inv.addItem(s.getIcon());
