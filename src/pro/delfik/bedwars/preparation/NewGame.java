@@ -13,13 +13,13 @@ import static implario.util.Converter.plural;
 
 public class NewGame {
 
-	public static final GUI gui = new SlotGUI("Выбор игры", GamePreparation.HARDCODED_PREPARATION_LIMIT / 9, (p, slot, item) -> {
-		GamePreparation prep = GamePreparation.get(slot);
+	public static final GUI gui = new SlotGUI("Выбор игры", PublicGame.HARDCODED_PREPARATION_LIMIT / 9, (p, slot, item) -> {
+		PublicGame prep = PublicGame.get(slot);
 		if (prep != null) {
 			prep.add(Person.get(p));
 			return;
 		}
-		if (slot >= GamePreparation.HARDCODED_PREPARATION_LIMIT || slot < 0) return;
+		if (slot >= PublicGame.HARDCODED_PREPARATION_LIMIT || slot < 0) return;
 		p.openInventory(getFormatSelector(p, slot).inv());
 	});
 	public static final ItemStack EMPTY = ItemBuilder.create(Material.NETHER_STAR, "§7§lПустой сектор","§f>> §a§lСоздать игру §f<<");
@@ -35,7 +35,7 @@ public class NewGame {
 			p.closeInventory();
 			return;
 		}
-		GamePreparation prep = new GamePreparation(format, gpid);
+		PublicGame prep = new PublicGame(format, gpid);
 		prep.add(Person.get(p));
 		prep.setOwner(p.getName());
 	}
@@ -47,7 +47,7 @@ public class NewGame {
 	}
 
 
-	public static void update(int slot, GamePreparation p) {
+	public static void update(int slot, PublicGame p) {
 		if (p == null) {
 			gui.inv().setItem(slot, EMPTY);
 			return;

@@ -25,7 +25,7 @@ import pro.delfik.bedwars.game.Game;
 import pro.delfik.bedwars.game.stuff.GPSTracker;
 import pro.delfik.bedwars.game.stuff.HomeTeleportation;
 import pro.delfik.bedwars.game.stuff.RescuePlatform;
-import pro.delfik.bedwars.preparation.GamePreparation;
+import pro.delfik.bedwars.preparation.PublicGame;
 import pro.delfik.bedwars.purchase.Purchase;
 import pro.delfik.lmao.outward.item.I;
 import pro.delfik.lmao.user.Person;
@@ -129,7 +129,7 @@ public class GameListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onQuit(PlayerQuitEvent e) {
-		GamePreparation pr = GamePreparation.byPlayer.get(e.getPlayer().getName());
+		PublicGame pr = PublicGame.byPlayer.get(e.getPlayer().getName());
 		if (pr != null) pr.remove(Person.get(e.getPlayer()));
 		Game g = Game.get(e.getPlayer());
 		if (g != null) g.eliminate(e.getPlayer());

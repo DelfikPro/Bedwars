@@ -21,7 +21,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import pro.delfik.bedwars.game.BWTeam;
 import pro.delfik.bedwars.game.Game;
-import pro.delfik.bedwars.preparation.GamePreparation;
+import pro.delfik.bedwars.preparation.PublicGame;
 import pro.delfik.bedwars.preparation.GameSelector;
 import pro.delfik.bedwars.preparation.NewGame;
 import pro.delfik.bedwars.purchase.Purchase;
@@ -83,11 +83,11 @@ public class GeneralListener implements Listener {
 				e.getPlayer().openInventory(NewGame.gui.inv());
 				break;
 			case SLIME_BALL:
-				GamePreparation p = GamePreparation.byPlayer.get(e.getPlayer().getName());
+				PublicGame p = PublicGame.byPlayer.get(e.getPlayer().getName());
 				if (p != null) e.getPlayer().openInventory(p.getMapVoting().getGui().getInventory());
 				break;
 			case DARK_OAK_DOOR_ITEM:
-				GamePreparation p1 = GamePreparation.byPlayer.get(e.getPlayer().getName());
+				PublicGame p1 = PublicGame.byPlayer.get(e.getPlayer().getName());
 				if (p1 != null) p1.remove(Person.get(e.getPlayer()));
 				break;
 			case COMPASS:
@@ -142,8 +142,7 @@ public class GeneralListener implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		e.setQuitMessage("");
-		GamerInfo info = GamerInfo.remove(e.getPlayer());
-		FileIO.writeBytes("playerSettings/" + e.getPlayer().getName().toLowerCase() + ".txt", info.toByteZip().build());
+		GamerInfo.saveAndRemove(e.getPlayer());
 	}
 
 	@EventHandler
