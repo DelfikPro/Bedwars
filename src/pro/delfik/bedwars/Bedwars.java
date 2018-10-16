@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
 import pro.delfik.bedwars.game.Color;
 import pro.delfik.bedwars.game.Items;
 import pro.delfik.bedwars.purchase.Deal;
@@ -28,8 +29,10 @@ public class Bedwars {
 		p.setFoodLevel(20);
 		p.setSaturation(20);
 		p.setHealth(20);
-		I.delay(() -> p.setAllowFlight(true), 2);
-		p.setGameMode(GameMode.ADVENTURE);
+		I.delay(() -> {
+			p.setAllowFlight(true);
+			p.setGameMode(GameMode.ADVENTURE);
+		}, 2);
 		p.setDisplayName(Person.get(p).getRank().getPrefix() + "§7" + p.getName());
 		PlayerInventory inv = p.getInventory();
 		inv.clear();
@@ -37,7 +40,12 @@ public class Bedwars {
 		inv.setItem(0, Items.JOIN_GAME);
 		inv.setItem(7, Items.GAME_LIST);
 		inv.setItem(8, Items.BACK_TO_LOBBY);
+		clearEffects(p);
 		p.teleport(getLobby().getSpawnLocation());
+	}
+
+	private static void clearEffects(Player p) {
+		for (PotionEffect effect : p.getActivePotionEffects()) p.removePotionEffect(effect.getType());
 	}
 
 	/**
@@ -74,11 +82,12 @@ public class Bedwars {
 		p.setGameMode(GameMode.SURVIVAL);
 		p.setAllowFlight(false);
 		I.delay(() -> p.setAllowFlight(false), 2);
-		p.setExp(0);
+		p.setExp(1);
 		p.setLevel(0);
 		p.setFoodLevel(20);
 		p.setSaturation(5);
 		p.setDisplayName(c.getPrefix() + p.getName());
+		clearEffects(p);
 		inv.clear();
 		GamerInfo i = GamerInfo.ALL.get(p);
 		inv.setItem(i.getDefaultSlots().getOrDefault(Deal.Type.SWORD, 0), Items.getDeafultSword());
