@@ -21,6 +21,7 @@ public class Items {
 	public static final ItemStack VOTE_FOR_MAP = ItemBuilder.create(Material.SLIME_BALL, "§f>> §a§lГолосовать за карту§f <<", "§e§oВыбор карты путём голосования.");
 	public static final ItemStack LEAVE_GAME = ItemBuilder.create(Material.DARK_OAK_DOOR_ITEM, "§f>> §c§lВыйти§f <<");
 	public static final ItemStack GAME_LIST = ItemBuilder.create(Material.WATCH, "§f>> §6§lСписок игр§f <<");
+	public static final ItemStack SELECT_TEAM = ItemBuilder.create(Material.NAME_TAG, "§f>> §b§lВыбрать команду§f <<");
 
 	private static final CyclicIterator<ItemStack> SWORDS = new CyclicIterator<>(new ItemStack[] {
 			ItemBuilder.create(Material.STONE_SWORD, "§fЕгипетский топор", "§a§oВ египте были топоры?"),
