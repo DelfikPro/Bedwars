@@ -141,9 +141,9 @@ public class BWHShop {
 				})), Material.TNT, "§6§lРазное", "§e§oВсё, чего желает ваша душа:\n§e§oПаутинка, спасительные платформы,\n§e§oШпионские гаджеты, и даже...\n§c§oВзрывчатка!"),
 
 				new Purchase.Section(new PurchaseGUI("Обмен ресурсов", 2, new Deal[] {
-						new Deal(ItemBuilder.setAmount(BRONZE.getItem(), 32), IRON, 1),
 						new Deal(ItemBuilder.setAmount(IRON.getItem(), 1), BRONZE, 48),
 						new Deal(ItemBuilder.setAmount(GOLD.getItem(), 1), IRON, 14),
+						new Deal(ItemBuilder.setAmount(BRONZE.getItem(), 32), IRON, 1),
 						new Deal(ItemBuilder.setAmount(IRON.getItem(), 7), GOLD, 1)
 				}), Material.GOLD_INGOT, "§e§lОбмен ресурсов", "§e§oЗдесь можно получить дорогие ресурсы\n§e§oЗа дешёвые, и наоборот.")
 		);

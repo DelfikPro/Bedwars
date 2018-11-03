@@ -17,7 +17,7 @@ public class GamerInfo implements Byteable {
 
 	private final String name;
 	private final Deal[] fDeals;
-	private final EnumReference<Type, Integer> defaultSlots = new EnumReference<Type, Integer>(Type.class, Type::getDefaultSlot) {};
+	private final EnumReference<Type, Integer> defaultSlots = new EnumReference<Type, Integer>(Type.class) {};
 
 	public GamerInfo(ByteUnzip unzip) {
 		name = unzip.getString();
@@ -28,11 +28,11 @@ public class GamerInfo implements Byteable {
 		ALL.put(Bukkit.getPlayer(name), this);
 	}
 
-	public GamerInfo(Player p, int[] favouriteDeals, byte[] slots) {
+	public GamerInfo(Player p, int[] favouriteDeals) {
 		this.name = p.getName();
 		this.fDeals = new Deal[9];
 		for (int i = 0; i < 9; i++) fDeals[i] = Deal.byHash.get(favouriteDeals[i]);
-		for (int i = 0; i < slots.length; i++) defaultSlots.put(Type.values()[i], (int) slots[i]);
+		for (Type type : Type.values()) defaultSlots.put(type, -1);
 		ALL.put(p, this);
 	}
 
@@ -49,13 +49,13 @@ public class GamerInfo implements Byteable {
 		byte[] b = new byte[12];
 		for (int i = 0; i < Type.values().length; i++) {
 			Type t = Type.values()[i];
-			b[i] = defaultSlots.getDefault(t).byteValue();
+			b[i] = defaultSlots.getOrDefault(t, -1).byteValue();
 		}
 		return zip.add(b);
 	}
 
 	public static GamerInfo getDefault(Player p) {
-		return new GamerInfo(p, new int[9], new byte[0]);
+		return new GamerInfo(p, new int[9]);
 	}
 
 	public int getSlotFor(Type type) {

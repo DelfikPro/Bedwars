@@ -72,8 +72,9 @@ public class WorldUtils {
 		Chunk A = aa.getChunk(), B = bb.getChunk();
 		int ax = A.getX(), bx = B.getX(), az = A.getZ(), bz = B.getZ();
 		List<Chunk> result = new ArrayList<>();
+		System.out.println("Clearing map in " + w.getName() + ": a(" + ax + ", " + az + "), b(" + bx + ", " + bz + ")");
 		for (int x = min(ax, bx); x < max(ax, bx); x++)
-			for (int z = min(-az, bz); x < max(az, bz); x++)
+			for (int z = min(az, bz); z < max(az, bz); z++)
 				result.add(w.getChunkAt(x, z));
 		return result;
 	}

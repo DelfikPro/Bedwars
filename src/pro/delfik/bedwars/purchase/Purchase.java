@@ -45,7 +45,7 @@ public class Purchase implements Listener {
 	}
 
 	private static void shopClick(InventoryClickEvent event) {
-		Player p = ((Player) event.getWhoClicked());
+		Player p = (Player) event.getWhoClicked();
 		GamerInfo i = GamerInfo.ALL.get(p);
 		if (event.getHotbarButton() == -1) {
 			int slot = event.getSlot();
@@ -116,7 +116,7 @@ public class Purchase implements Listener {
 		int slot = event.getSlot();
 		ItemStack item = event.getCurrentItem();
 		if (item.getType() == Material.BED) {
-			open(((Player) event.getWhoClicked()));
+			open((Player) event.getWhoClicked());
 			return;
 		}
 		if (slot >= deals.length) return;

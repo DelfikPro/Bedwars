@@ -203,7 +203,8 @@ public class GeneralListener implements Listener {
 
 	@EventHandler
 	public void onItemDrop(PlayerDropItemEvent e) {
-		if (Bedwars.trashSet.contains(e.getItemDrop().getItemStack().getType())) e.getItemDrop().remove();
+		if (Bedwars.trashSet.contains(e.getItemDrop().getItemStack().getType()) ||
+				e.getItemDrop().getItemStack().getType() == Material.STONE_SWORD) e.getItemDrop().remove();
 		if (Game.get(e.getPlayer().getWorld()) == null && e.getPlayer().getGameMode() != GameMode.CREATIVE) e.setCancelled(true);
 	}
 

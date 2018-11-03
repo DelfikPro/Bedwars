@@ -44,6 +44,7 @@ public class CommandSetupSlots extends LmaoCommand implements Listener {
 		player.getInventory().clear();
 		List<Deal.Type> list = new ArrayList<>();
 		for (Map.Entry<Deal.Type, Integer> e : g.getDefaultSlots().entrySet()) {
+			if (e.getValue() == -1) continue;
 			player.getInventory().setItem(e.getValue(), e.getKey().getItem());
 			list.add(e.getKey());
 		}
@@ -75,6 +76,7 @@ public class CommandSetupSlots extends LmaoCommand implements Listener {
 			if (type == null) continue;
 			g.getDefaultSlots().put(type, i);
 		}
+		for (Deal.Type t : Deal.Type.values()) if (!g.getDefaultSlots().containsKey(t)) g.getDefaultSlots().put(t, -1);
 		player.sendMessage("§a§lНастройки слотов сохранены.");
 		player.getInventory().clear();
 		I.delay(() -> {

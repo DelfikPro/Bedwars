@@ -60,8 +60,8 @@ public class Bedwars {
 			Deal.Type type = Deal.Type.byItem(i);
 			if (type == null) add(p, i);
 			else {
-				int slot = info.getDefaultSlots().getDefault(type);
-				if (slot == -1) add(p, i);
+				Integer slot = info.getDefaultSlots().get(type);
+				if (slot == null || slot == -1) add(p, i);
 				else {
 					ItemStack c = p.getInventory().getItem(slot);
 					p.getInventory().setItem(slot, i);
@@ -90,7 +90,8 @@ public class Bedwars {
 		clearEffects(p);
 		inv.clear();
 		GamerInfo i = GamerInfo.ALL.get(p);
-		inv.setItem(i.getDefaultSlots().getOrDefault(Deal.Type.SWORD, 0), Items.getDeafultSword());
+		int swordSlot = i.getDefaultSlots().getOrDefault(Deal.Type.SWORD, -1);
+		inv.setItem(swordSlot == -1 ? 0 : swordSlot, Items.getDeafultSword());
 		I.delay(() -> inv.setArmorContents(Items.getDefaultArmor(p)), 2);
 	}
 

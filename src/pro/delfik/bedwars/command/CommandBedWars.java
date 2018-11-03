@@ -132,7 +132,7 @@ public class CommandBedWars extends LmaoCommand {
 	private static String tp(CommandSender commandSender, String[] strings) {
 		requireRank(commandSender, Rank.ADMIN);
 		requireArgs(strings, 1, "[Мир]");
-		((Player) commandSender).teleport(pro.delfik.bedwars.game.Map.get("aeris").getCenter().toLocation(Bukkit.getWorld(strings[0])));
+		((Player) commandSender).teleport(pro.delfik.bedwars.game.Map.get("actuon").getCenter().toLocation(Bukkit.getWorld(strings[0])));
 		return "§aВы были телепортированы в мир §e" + ((Player) commandSender).getWorld().getName();
 	}
 
@@ -168,6 +168,7 @@ public class CommandBedWars extends LmaoCommand {
 	}
 
 	private static String resources(CommandSender commandSender, String[] strings) {
+		requireRank(commandSender, Rank.ADMIN);
 		Player p = ((Player) commandSender);
 		for (Resource r : Resource.values()) p.getInventory().addItem(ItemBuilder.setAmount(r.getItem(), 64));
 		return "§aРесурсы выданы.";
@@ -202,6 +203,7 @@ public class CommandBedWars extends LmaoCommand {
 
 	@Override
 	protected void run(CommandSender sender, String cmd, String args[]) {
+		requireRank(sender, Rank.ULTIBUILDER);
 		if (args.length == 0)
 			throw new CustomException("§c/bedwars [§f" + Converter.merge(functions.keySet(), s -> s, "§c, §f") + "§c]");
 		String[] a = new String[args.length - 1];

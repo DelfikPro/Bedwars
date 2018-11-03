@@ -198,7 +198,7 @@ public class Game {
 		started = System.currentTimeMillis();
 		timerTask = I.timer(() -> {
 			long time = (System.currentTimeMillis() - started) / 1000;
-			float percentage = 1f - (time / GAME_DURATION);
+			float percentage = 1f - time / GAME_DURATION;
 			if (percentage <= 0) {
 				timerTask.cancel();
 				draw();
@@ -295,8 +295,13 @@ public class Game {
 		Chunk ch = world.getSpawnLocation().getChunk();
 		world.regenerateChunk(ch.getX(), ch.getZ());
 		for (Chunk c : chunks) {
-			world.regenerateChunk(c.getX(), c.getZ());
-			world.unloadChunk(c);
+			try {
+				world.regenerateChunk(c.getX(), c.getZ());
+				world.unloadChunk(c);
+			} catch (Throwable t) {
+				System.out.println("Не удалось очистить чанк " + world.getName() + "[" + c.getX() + ":" + c.getZ() + "]");
+				t.printStackTrace();
+			}
 		}
 		RUNNING.set(id, null);
 	}
@@ -308,7 +313,9 @@ public class Game {
 
 	public void clear() {
 		world.getEntities().forEach(Entity::remove);
+		Bukkit.broadcastMessage("§7§o[Player-modified chunks to clean: " + chunks.size() + "]");
 		chunks.addAll(WorldUtils.getAllChunksBetween(world, map.getMin(), map.getMax()));
+		Bukkit.broadcastMessage("§7§o[Total chunks to clean: " + chunks.size() + "]");
 		Iterator<Chunk> iterator = chunks.iterator();
 		Chunk ch = world.getSpawnLocation().getChunk();
 		world.regenerateChunk(ch.getX(), ch.getZ());
@@ -316,8 +323,13 @@ public class Game {
 			for (int i = 0; i < 5; i++) {
 				if (iterator.hasNext()) {
 					Chunk c = iterator.next();
-					world.regenerateChunk(c.getX(), c.getZ());
-					world.unloadChunk(c);
+					try {
+						world.regenerateChunk(c.getX(), c.getZ());
+						world.unloadChunk(c);
+					} catch (Throwable t) {
+						System.out.println("Не удалось очистить чанк " + world.getName() + "[" + c.getX() + ":" + c.getZ() + "]");
+						t.printStackTrace();
+					}
 				} else if (clearTask != -1) {
 					RUNNING.set(id, null);
 					setState(State.NOTHING);

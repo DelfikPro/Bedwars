@@ -74,26 +74,24 @@ public class Deal {
 	}
 
 	public enum Type {
-		FISHING_ROD(-1, new ItemStack(Material.FISHING_ROD), 0),
-		BLOCKS(1, create(Material.SANDSTONE, "§eБлоки"), 1),
-		SWORD(0, create(Material.STONE_SWORD, "§cМеч"), 2),
-		BOW(-1, create(Material.BOW, "§cЛук"), 3),
-		WEB(-1, new ItemStack(Material.WEB), 4),
-		PICKAXE(2, create(Material.STONE_PICKAXE, "§aКирка"), 5),
-		FOOD(3, create(Material.APPLE, "§eЕда"), 6),
-		HEAL(-1, new PotionBuilder(PotionType.INSTANT_HEAL).build(), 7),
-		STRENGTH(-1, new PotionBuilder(PotionType.STRENGTH).withDuration(3600).build(), 8),
-		PLATFORM(-1, create(Material.BLAZE_ROD, "§aСпасительная платформа"), 9),
-		ARROW(-1, new ItemStack(Material.ARROW), 10),
-		TP_HOME(-1, create(Material.SULPHUR, "§aТелепортация на базу"), 11);
+		FISHING_ROD(new ItemStack(Material.FISHING_ROD), 0),
+		BLOCKS(create(Material.SANDSTONE, "§eБлоки"), 1),
+		SWORD(create(Material.STONE_SWORD, "§cМеч"), 2),
+		BOW(create(Material.BOW, "§cЛук"), 3),
+		WEB(new ItemStack(Material.WEB), 4),
+		PICKAXE(create(Material.STONE_PICKAXE, "§aКирка"), 5),
+		FOOD(create(Material.APPLE, "§eЕда"), 6),
+		HEAL(new PotionBuilder(PotionType.INSTANT_HEAL).build(), 7),
+		STRENGTH(new PotionBuilder(PotionType.STRENGTH).withDuration(3600).build(), 8),
+		PLATFORM(create(Material.BLAZE_ROD, "§aСпасительная платформа"), 9),
+		ARROW(new ItemStack(Material.ARROW), 10),
+		TP_HOME(create(Material.SULPHUR, "§aТелепортация на базу"), 11);
 
 		private final ItemStack item;
-		private final int defaultSlot;
 		private final byte id;
 
-		Type(int slot, ItemStack item, int id) {
+		Type(ItemStack item, int id) {
 			this.item = item;
-			defaultSlot = slot;
 			this.id = (byte) id;
 		}
 
@@ -101,9 +99,6 @@ public class Deal {
 			return item;
 		}
 
-		public int getDefaultSlot() {
-			return defaultSlot;
-		}
 
 		public static Type byItem(ItemStack i) {
 			switch (i.getType()) {
